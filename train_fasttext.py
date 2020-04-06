@@ -1,4 +1,4 @@
-# Main script for loading corpus and training model
+"""Main script for loading corpus and training model"""
 from gensim.models import FastText
 from utils import JSTORCorpus
 

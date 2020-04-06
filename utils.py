@@ -1,4 +1,4 @@
-# Utilities for accessing JSTOR Data for Research Corpus
+"""Utilities for accessing JSTOR Data for Research Corpus"""
 
 import os
 import re
@@ -31,7 +31,7 @@ class JSTORCorpus(object):
             self.extract_jstor_meta(self.meta_dir, self.data_dir)
         else:
             # Otherwise loop over the corpus and extract doc_type information
-            self.doc_types = set([doc['type'] for key,doc in self.corpus_meta.items()])
+            self.doc_types = set([doc['type'] for key, doc in self.corpus_meta.items()])
         
     def __iter__(self):
         for key in self.corpus_meta:
