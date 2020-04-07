@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --max-tasks-per-node=1
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --job-name=FastTextLitReview
 #SBATCH --mail-type=END,FAIL
