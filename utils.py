@@ -42,6 +42,19 @@ class JSTORCorpus(object):
                 text = self.TAG_RGX.sub('', raw_xml)
                 # Yield array of tokens
                 yield wordpunct_tokenize(text)
+                
+    def __len__(self):
+        return len(self.corpus_meta)
+    
+    def iter_lower(self):
+        for key in self.corpus_meta:
+            with open(key) as file:
+                # Get text
+                raw_xml = file.read()
+                # Strip tags
+                text = self.TAG_RGX.sub('', raw_xml)
+                # Yield array of lowercase tokens
+                yield wordpunct_tokenize(text.lower())
 
     def extract_jstor_meta(self, meta_dir, data_dir):
         """Loops over directory of JSTOR metadata files, extracts key info from xml
@@ -77,7 +90,7 @@ class JSTORCorpus(object):
 
             # Read in metadata file
             with open(os.path.join(meta_dir, name)) as file:
-                meta_xml = BeautifulSoup(file.read())
+                meta_xml = BeautifulSoup(file.read(), features="lxml")
 
             # Get key metadata
             doc_dict = {}
@@ -129,7 +142,7 @@ class JSTORCorpus(object):
 
         filtered_corpus = {}
 
-        orig_len = len(self.corpus_meta)
+        orig_len = len(self)
         print(f'Filtering {orig_len} documents between years {min_year} and {max_year}...')
 
         for key,val_dict in self.corpus_meta.items():
@@ -156,7 +169,7 @@ class JSTORCorpus(object):
 
         filtered_corpus = {}
 
-        orig_len = len(self.corpus_meta)
+        orig_len = len(self)
         print(f'Filtering {orig_len} documents ...')
 
         for key, val_dict in self.corpus_meta.items():
