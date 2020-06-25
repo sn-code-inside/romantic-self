@@ -1,8 +1,10 @@
-from utils import JSTORCorpus
+"""Basic script for training Lda and Tfidf models"""
+
 from gensim.corpora import Dictionary
 from gensim.models import TfidfModel, LdaModel
-
 from nltk.corpus import stopwords
+
+from utils import JSTORCorpus
 
 # Import and save whole corpus
 corpus = JSTORCorpus(data_dir='data/ocr', meta_dir='data/metadata')
@@ -11,13 +13,18 @@ corpus.save('data/whole-corpus.p')
 # Create dictionary
 dct = Dictionary(corpus.iter_lower())
 print(f"Dictionary created: {len(dct.token2id)} unique types")
-dct.filter_extremes(no_below=20, no_above=1., keep_n=None) # Only keep types that appear in at least 20 documents
+# Only keep types that appear in at least 20 documents
+dct.filter_extremes(no_below=20, no_above=1., keep_n=None)
 print(f"Infrequent types filtered out: {len(dct.token2id)} unique types")
-sw_tokens = stopwords.words('english') # Get list of English stopwords
-sw_ids = [dct.token2id[token] for token in sw_tokens if token in dct.token2id] # Convert to ids for dct
-dct.filter_tokens(bad_ids=sw_ids) # Remove stopwords from dct
+# Get list of English stopwords
+sw_tokens = stopwords.words('english')
+# Convert to ids for dct
+sw_ids = [dct.token2id[token] for token in sw_tokens if token in dct.token2id]
+# Remove stopwords from dct
+dct.filter_tokens(bad_ids=sw_ids)
 print(f"Stopwords filtered out: {len(dct.token2id)} unique types")
-dct.compactify() # Shrink so there are no empty dimensions
+# Shrink so there are no empty dimensions
+dct.compactify()
 print("Dictionary compactified")
 dct.save('models/corpus-lower-dct')
 print("Dictionary saved to models/corpus-lower-dct")
