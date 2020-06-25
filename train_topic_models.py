@@ -11,7 +11,7 @@ corpus.save('data/whole-corpus.p')
 # Create dictionary
 dct = Dictionary(corpus.iter_lower())
 print(f"Dictionary created: {len(dct.token2id)} unique types")
-dct.filter_extremes(no_below=20, no_above=None, keep_n=None) # Only keep types that appear in at least 20 documents
+dct.filter_extremes(no_below=20, no_above=1., keep_n=None) # Only keep types that appear in at least 20 documents
 print(f"Infrequent types filtered out: {len(dct.token2id)} unique types")
 sw_tokens = stopwords.words('english') # Get list of English stopwords
 sw_ids = [dct.token2id[token] for token in sw_tokens if token in dct.token2id] # Convert to ids for dct
