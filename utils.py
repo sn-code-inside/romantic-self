@@ -7,7 +7,6 @@ import pickle as p
 from math import inf
 
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 from nltk.tokenize import wordpunct_tokenize
 
 class JSTORCorpus(object):
@@ -18,7 +17,8 @@ class JSTORCorpus(object):
     - data_dir (str): path to txt files
     - corpus_meta (dict, optional): corpus dict, used internally"""
 
-    TAG_RGX = re.compile('<[^>]+>') # For cleaning .txt files
+    # For cleaning txt files. Finds xml tags or end-of-line hyphens to delete
+    CLEAN_RGX = re.compile('<[^>]+>|(?<=\w)-\s+(?=\w)')
 
     def __init__(self, meta_dir, data_dir, corpus_meta=None):
         self.meta_dir = meta_dir
@@ -39,7 +39,7 @@ class JSTORCorpus(object):
                 # Get text
                 raw_xml = file.read()
                 # Strip tags
-                text = self.TAG_RGX.sub('', raw_xml)
+                text = self.CLEAN_RGX.sub('', raw_xml)
                 # Yield array of tokens
                 yield wordpunct_tokenize(text)
                 
@@ -47,12 +47,14 @@ class JSTORCorpus(object):
         return len(self.corpus_meta)
     
     def iter_lower(self):
+        """Iterates over the corpus, putting tokens in lower case."""
+        
         for key in self.corpus_meta:
             with open(key) as file:
                 # Get text
                 raw_xml = file.read()
                 # Strip tags
-                text = self.TAG_RGX.sub('', raw_xml)
+                text = self.CLEAN_RGX.sub('', raw_xml)
                 # Yield array of lowercase tokens
                 yield wordpunct_tokenize(text.lower())
 
@@ -74,7 +76,7 @@ class JSTORCorpus(object):
         # The metadata file contains many documents without a text file. We don't want that!
         actual_docs = set(os.listdir(data_dir))
 
-        for name in tqdm(os.listdir(meta_dir)):
+        for name in os.listdir(meta_dir):
  
             # Infer name of data file and check
             txt_file = name[:-3] + 'txt' # replace .xml with .txt
@@ -195,14 +197,17 @@ class JSTORCorpus(object):
             p.dump(out, file)
 
         print(f'Corpus saved to {path}')
+        
+    @classmethod
+    def load(cls, path):
+        """Load a pickled corpus created by JSTORCorpus.save()
+    
+        Arguments:
+        path (str): path to the corpus"""
 
-def load_jstor_corpus(path):
-    """Helper function that loads a pickled corpus created by JSTORCorpus.save()
+        with open(path, 'rb') as corpus_file:
+            corpus = cls(**p.load(corpus_file))
+        
+        print(f'Corpus loaded from {path}')
 
-    Arguments:
-    - path (str): path to the corpus"""
-
-    with open(path, 'rb') as corpus_file:
-        corpus = JSTORCorpus(**p.load(corpus_file))
-
-    return corpus
+        return corpus
