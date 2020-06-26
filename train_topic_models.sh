@@ -6,4 +6,5 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=mgf@kent.ac.uk
 #SBATCH --output=/home/mgf/slurm/logs/%j.out
+cd ~/romantic-self
 python train_topic_models.py
