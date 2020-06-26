@@ -32,16 +32,17 @@ print(strftime("%Y-%m-%d - %H:%M : ") + "Dictionary compactified")
 dct.save('models/corpus-lower-dct')
 print(strftime("%Y-%m-%d - %H:%M : ") + "Dictionary saved to models/corpus-lower-dct")
 
+# Write training corpus to memory
+bow_corpus = [dct.doc2bow(text) for text in corpus.iter_lower()]
+
 # Train tf-idf model
-print(strftime("%Y-%m-%d - %H:%M : ") + "Training TfidfModel...")
-bow_corpus = (dct.doc2bow(text) for text in corpus.iter_lower())
+print(strftime("%Y-%m-%d - %H:%M : ") + "Training TfidfModel...") 
 tfidf_model = TfidfModel(bow_corpus)
 tfidf_model.save('models/corpus-lower-tfidf')
 print(strftime("%Y-%m-%d - %H:%M : ") + "TfidfModel trained and saved to models/corpus-lower-tfidf")
 
 # Train lda model
 print(strftime("%Y-%m-%d - %H:%M : ") + "Training LdaModel...")
-bow_corpus = (dct.doc2bow(text) for text in corpus.iter_lower())
 lda_model = LdaModel(bow_corpus, num_topics=150, id2word=dct, passes=20)
 lda_model.save('models/corpus-lower-lda')
 print(strftime("%Y-%m-%d - %H:%M : ") + "LdaModel trained and saved to models/corpus-lower-tfidf")
