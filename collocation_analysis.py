@@ -23,7 +23,7 @@ trigram_measures = nltk.collocations.TrigramAssocMeasures()
 
 # find bigrams with 'self'
 print(strftime("%Y-%m-%d - %H:%M : ") + "finding bigrams with 'self'...")
-corpus_chain = chain(corpus.iter_lower())
+corpus_chain = chain(*corpus.iter_lower())
 finder = BigramCollocationFinder.from_words(corpus_chain, window_size=4)
 finder.apply_ngram_filter(self_filter)
 scored_self_bigrams = finder.score_ngrams(bigram_measures.likelihood_ratio)
@@ -33,7 +33,7 @@ print(strftime("%Y-%m-%d - %H:%M : ") + "results saved to data/scored_self_bigra
 
 # find trigrams with 'self' and 'romantic'
 print(strftime("%Y-%m-%d - %H:%M : ") + "finding trigrams with 'self' and 'romantic'...")
-corpus_chain = chain(corpus.iter_lower())
+corpus_chain = chain(*corpus.iter_lower())
 finder = TrigramCollocationFinder.from_words(corpus_chain, window_size=10)
 finder.apply_ngram_filter(self_filter)
 finder.apply_ngram_filter(rom_filter)
@@ -44,7 +44,7 @@ print(strftime("%Y-%m-%d - %H:%M : ") + "results saved to data/scored_self_rom_t
 
 # find trigrams with 'self' and NOT 'romantic'
 print(strftime("%Y-%m-%d - %H:%M : ") + "finding trigrams with 'self' and NOT 'romantic'...")
-corpus_chain = chain(corpus.iter_lower())
+corpus_chain = chain(*corpus.iter_lower())
 finder = TrigramCollocationFinder.from_words(corpus_chain, window_size=10)
 finder.apply_ngram_filter(self_filter)
 finder.apply_ngram_filter(not_rom_filter)
