@@ -18,7 +18,7 @@ class JSTORCorpus(object):
     - corpus_meta (dict, optional): corpus dict, used internally"""
 
     # For cleaning txt files. Finds xml tags or end-of-line hyphens to delete
-    CLEAN_RGX = re.compile('<[^>]+>|(?<=\w)-\s+(?=\w)')
+    CLEAN_RGX = re.compile(r'<[^>]+>|(?<=\w)-\s+(?=\w)')
 
     def __init__(self, meta_dir, data_dir, corpus_meta=None):
         self.meta_dir = meta_dir
@@ -42,13 +42,13 @@ class JSTORCorpus(object):
                 text = self.CLEAN_RGX.sub('', raw_xml)
                 # Yield array of tokens
                 yield wordpunct_tokenize(text)
-                
+
     def __len__(self):
         return len(self.corpus_meta)
-    
+
     def iter_lower(self):
         """Iterates over the corpus, putting tokens in lower case."""
-        
+
         for key in self.corpus_meta:
             with open(key) as file:
                 # Get text
@@ -77,7 +77,7 @@ class JSTORCorpus(object):
         actual_docs = set(os.listdir(data_dir))
 
         for name in os.listdir(meta_dir):
- 
+
             # Infer name of data file and check
             txt_file = name[:-3] + 'txt' # replace .xml with .txt
             if txt_file not in actual_docs:
@@ -102,7 +102,7 @@ class JSTORCorpus(object):
                 doc_dict['type'] = meta_xml.html.body.article['article-type']
                 # Store doc type in corpus metadata
                 self.doc_types.add(doc_dict['type'])
-                title = meta_xml.find(['article-title','source'])
+                title = meta_xml.find(['article-title', 'source'])
                 if title is not None:
                     doc_dict['title'] = title.get_text()
                 year = meta_xml.find('year')
@@ -120,8 +120,8 @@ class JSTORCorpus(object):
                 year = meta_xml.find('year')
                 if year is not None:
                     doc_dict['year'] = year.get_text()
-                # Getting chapter title is slightly harder, because sometimes each book-part is labelled
-                # simply with the internal id, and sometimes with the doi
+                # Getting chapter title is slightly harder, because sometimes each book-part
+                # is labelled simply with the internal id, and sometimes with the doi
                 book_id = re.sub('.+_', '', doi)
                 book_rgx = re.compile(re.escape(book_id))
                 doc_dict['title'] = meta_xml.find('book-part-id', string=book_rgx).parent.find('title').get_text()
@@ -147,7 +147,7 @@ class JSTORCorpus(object):
         orig_len = len(self)
         print(f'Filtering {orig_len} documents between years {min_year} and {max_year}...')
 
-        for key,val_dict in self.corpus_meta.items():
+        for key, val_dict in self.corpus_meta.items():
             # Skip files that cannot be parsed
             if 'year' not in val_dict:
                 continue
@@ -197,17 +197,17 @@ class JSTORCorpus(object):
             p.dump(out, file)
 
         print(f'Corpus saved to {path}')
-        
+
     @classmethod
     def load(cls, path):
         """Load a pickled corpus created by JSTORCorpus.save()
-    
+
         Arguments:
         path (str): path to the corpus"""
 
         with open(path, 'rb') as corpus_file:
             corpus = cls(**p.load(corpus_file))
-        
+
         print(f'Corpus loaded from {path}')
 
         return corpus
