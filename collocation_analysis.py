@@ -10,7 +10,7 @@ from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
 from utils import JSTORCorpus
 
 # import JSTORCorpus
-corpus = JSTORCorpus.load('data/whole_corpus.p')
+corpus = JSTORCorpus.load('data/whole-corpus.p')
 
 # collocation filters
 self_filter = lambda *w: 'self' not in w
