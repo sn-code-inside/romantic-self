@@ -3,7 +3,6 @@
 from itertools import chain
 from time import strftime
 import pickle as p
-from copy import deepcopy
 
 import nltk
 from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
