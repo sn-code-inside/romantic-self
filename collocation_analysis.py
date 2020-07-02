@@ -3,6 +3,7 @@
 from itertools import chain
 from time import strftime
 import pickle as p
+import os
 
 import nltk
 from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
@@ -12,6 +13,7 @@ from utils import JSTORCorpus
 DATA_PATH = 'data/'
 CORPUS_PATH = DATA_PATH + 'last-15-years-corpus.p'
 OUT_PATH = 'data/collocations-' + strftime('%Y-%m-%d') + '/'
+os.makedirs(OUT_PATH)
 
 # import JSTORCorpus
 corpus = JSTORCorpus.load(CORPUS_PATH)
