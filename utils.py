@@ -175,7 +175,7 @@ class JSTORCorpus(object):
         print(f'Filtering {orig_len} documents ...')
 
         for key, val_dict in self.corpus_meta.items():
-            if val_dict.type in allowed_types:
+            if val_dict['type'] in allowed_types:
                 filtered_corpus[key] = val_dict
 
         self.corpus_meta = filtered_corpus
