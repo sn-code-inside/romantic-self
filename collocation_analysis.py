@@ -17,7 +17,6 @@ os.makedirs(OUT_PATH)
 
 # import JSTORCorpus
 corpus = JSTORCorpus.load(CORPUS_PATH)
-corpus.filter_by_type(allowed_types=['journal-article'])
 
 # collocation filters
 self_filter = lambda *w: 'self' not in w
