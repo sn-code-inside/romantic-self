@@ -7,7 +7,10 @@ import pickle as p
 from math import inf
 
 from bs4 import BeautifulSoup
+import nltk
 from nltk.tokenize import wordpunct_tokenize
+from nltk.probability import FreqDist
+from nltk.util import ngrams
 
 class JSTORCorpus(object):
     """Iterator for streaming files into Gensim. Also allows basic filtering.
@@ -124,7 +127,8 @@ class JSTORCorpus(object):
                 # is labelled simply with the internal id, and sometimes with the doi
                 book_id = re.sub('.+_', '', doi)
                 book_rgx = re.compile(re.escape(book_id))
-                doc_dict['title'] = meta_xml.find('book-part-id', string=book_rgx).parent.find('title').get_text()
+                doc_dict['title'] = meta_xml.find(
+                    'book-part-id', string=book_rgx).parent.find('title').get_text()
 
             # Store in corpus_meta dict
             self.corpus_meta[data_file] = doc_dict
@@ -211,3 +215,121 @@ class JSTORCorpus(object):
         print(f'Corpus loaded from {path}')
 
         return corpus
+
+class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
+    """Finds associations for a particular word, can distinguish linguistic contexts.
+
+    The main purpose of this class is to investigate the collocations of particular words
+    in a large corpus in different linguistic environments."""
+    def __init__(self, word_fd, bigram_fd, target, window_size=2, include=None, exclude=None):
+        """Construct a TargetedCollocationFinder, given FreqDists for
+        appearances of words and (possibly non-contiguous) bigrams.
+
+        Arguments:
+        ==========
+        word_fd, bigram_fd : FreqDist
+            the FreqDists for the words in the corpus and the bigrams
+        window_size : int
+            the size of the sliding window in which collocations are found
+        target : str
+            the word whose collocations we are searching for
+        include, exclude : iterable of str
+            context words which must or must not appear in the window for bigram to be kept
+        """
+        super().__init__(word_fd, bigram_fd)
+        self.window_size = window_size
+        self.target = target
+        self.include = include
+        self.exclude = exclude
+
+    @classmethod
+    def from_words(cls, words, target, include=None, exclude=None, window_size=2):
+        """Construct a TargetedCollocationFinder for all bigrams in the given
+        sequence. When window_size > 2, count non-contiguous bigrams, with the option
+        of keeping only those bigrams where certain context words appears in the window."""
+
+        wfd = FreqDist()
+        bfd = FreqDist()
+
+        if window_size < 2:
+            raise ValueError("Specify window_size at least 2")
+        if (include is not None or exclude is not None) and (window_size < 3):
+            raise ValueError("When searching with a context, specify window_size at least 3")
+
+        for window in ngrams(words, window_size, pad_right=True):
+
+            # As the window slides through the text, count the first word
+            # each time to get the individual word frequencies
+            w1 = window[0]
+            if w1 is None:
+                continue
+            wfd[w1] += 1
+
+            # If context is being used, check that this window is valid
+            if include is not None:
+                inc_score = 0
+                for inc in include:
+                    if inc in window:
+                        inc_score += 1
+                if inc_score < 1:
+                    continue
+            if exclude is not None:
+                exc_score = 0
+                for exc in exclude:
+                    if exc not in window:
+                        exc_score += 1
+                if exc_score < 1:
+                    continue
+
+            # Collect bigram frequencies if target is in the bigram
+            if w1 == target:
+                for w2 in window[1:]:
+                    bfd[(w1, w2)] += 1
+            else:
+                for w2 in window[1:]:
+                    if w2 == target:
+                        bfd[(w1, w2)] += 1
+
+        return cls(wfd, bfd, target, window_size, include, exclude)
+
+    @classmethod
+    def from_corpus(cls, corpus, target, include=None, exclude=None, window_size=2):
+        """Construct a collocation finder given a corpus of documents,
+        each of which is a list (or iterable) of tokens.
+        """
+        # Pad the documents to the right so that they won't overlap when windowed
+        corpus_chain = cls._build_new_documents(corpus, window_size, pad_right=True)
+        # Construct finder from stream of tokens
+        return cls.from_words(corpus_chain, target, include, exclude, window_size)
+
+    def score_ngram(self, score_fn, w1, w2):
+        """Returns the score for a given bigram using the given scoring
+        function.  Following Church and Hanks (1990), counts are scaled by
+        a factor of 1/(window_size - 1).
+
+        This function is copied from nltk.collocations.BigramCollocationFinder
+        """
+        n_all = self.N
+        n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
+        if not n_ii:
+            return
+        n_ix = self.word_fd[w1]
+        n_xi = self.word_fd[w2]
+        return score_fn(n_ii, (n_ix, n_xi), n_all)
+
+class CorpusBigramCollocationFinder(nltk.collocations.BigramCollocationFinder):
+    """Wrapper around BigramCollocationFinder that provides a from_corpus method."""
+
+    @classmethod
+    def from_corpus(cls, corpus, window_size=2):
+        """Construct a collocation finder given a corpus of documents,
+        each of which is a list (or iterable) of tokens.
+
+        This is the same method as AbstractCollocationFinder.from_documents,
+        except it allows you to choose the window_size.
+        """
+        # Pad the documents to the right so that they won't overlap when windowed
+        # Then chain them
+        corpus_chain = cls._build_new_documents(corpus, window_size, pad_right=True)
+        # Construct finder from stream of tokens
+        return cls.from_words(corpus_chain, window_size)
