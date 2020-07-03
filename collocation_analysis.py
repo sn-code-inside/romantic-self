@@ -20,7 +20,7 @@ os.makedirs(OUT_PATH)
 corpus = JSTORCorpus.load(CORPUS_PATH)
 
 # stats
-bigram_measures = nltk.collocations.BigramAssocMeasures()()
+bigram_measures = nltk.collocations.BigramAssocMeasures()
 
 # ALL BIGRAMS
 # find bigrams with 'self'
