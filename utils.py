@@ -323,6 +323,21 @@ class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
         n_xi = self.word_fd[w2]
         return score_fn(n_ii, (n_ix, n_xi), n_all)
 
+    def collapse_ngrams(self):
+        """By default, (w1,w2) and (w2,w1) are treated as seperate ngrams.
+        This method collapses the counts of all bigrams that differ only in
+        order."""
+
+        tmp_fd = FreqDist()
+
+        for (w1, w2), freq in self.ngram_fd.items():
+            if (w2, w1) in tmp_fd:
+                tmp_fd[(w2, w1)] += freq
+            else:
+                tmp_fd[(w1, w2)] = freq
+
+        self.ngram_fd = tmp_fd
+
 class CorpusBigramCollocationFinder(nltk.collocations.BigramCollocationFinder):
     """Wrapper around BigramCollocationFinder that provides a from_corpus method."""
 
