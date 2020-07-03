@@ -233,7 +233,7 @@ class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
             the size of the sliding window in which collocations are found
         target : str
             the word whose collocations we are searching for
-        include, exclude : iterable of str
+        include, exclude : list or tuple of str
             context words which must or must not appear in the window for bigram to be kept
         """
         super().__init__(word_fd, bigram_fd)
@@ -253,8 +253,13 @@ class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
 
         if window_size < 2:
             raise ValueError("Specify window_size at least 2")
-        if (include is not None or exclude is not None) and (window_size < 3):
-            raise ValueError("When searching with a context, specify window_size at least 3")
+        if include is not None or exclude is not None:
+            if not isinstance(include, (list, tuple)):
+                raise TypeError("include must be a list or tuple")
+            if not isinstance(exclude, (list, tuple)):
+                raise TypeError("exclude must be a list or tuple")
+            if window_size < 3:
+                raise ValueError("When searching with a context, specify window_size at least 3")
 
         for window in ngrams(words, window_size, pad_right=True):
 
@@ -284,7 +289,8 @@ class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
             # Collect bigram frequencies if target is in the bigram
             if w1 == target:
                 for w2 in window[1:]:
-                    bfd[(w1, w2)] += 1
+                    if w2 is not None:
+                        bfd[(w1, w2)] += 1
             else:
                 for w2 in window[1:]:
                     if w2 == target:
