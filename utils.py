@@ -254,12 +254,12 @@ class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
         if window_size < 2:
             raise ValueError("Specify window_size at least 2")
         if include is not None or exclude is not None:
-            if not isinstance(include, (list, tuple)):
-                raise TypeError("include must be a list or tuple")
-            if not isinstance(exclude, (list, tuple)):
-                raise TypeError("exclude must be a list or tuple")
             if window_size < 3:
                 raise ValueError("When searching with a context, specify window_size at least 3")
+        if include is not None and not isinstance(include, (list, tuple)):
+            raise TypeError("include must be a list or tuple")
+        if exclude is not None and not isinstance(exclude, (list, tuple)):
+            raise TypeError("exclude must be a list or tuple")
 
         for window in ngrams(words, window_size, pad_right=True):
 
