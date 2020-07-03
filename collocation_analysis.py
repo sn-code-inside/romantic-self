@@ -11,7 +11,7 @@ from utils import JSTORCorpus, TargetedCollocationFinder
 
 DATA_PATH = 'data/'
 CORPUS_PATH = DATA_PATH + 'last-15-years-corpus.p'
-WINDOW_SIZE = 9
+WINDOW_SIZE = 20
 OUT_PATH = 'data/collocations-' + strftime('%Y-%m-%d') + f'-wn{WINDOW_SIZE}/'
 
 # create output directory
