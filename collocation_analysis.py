@@ -3,15 +3,20 @@
 from time import strftime
 import pickle as p
 import os
+import argparse
 
 import nltk
 
 from utils import JSTORCorpus, TargetedCollocationFinder
 # from utils import CorpusBigramCollocationFinder
 
+parser = argparse.ArgumentParser(description="Perform collocation analysis on corpus")
+parser.add_argument('-w', dest='window', type=int, help='the window size')
+args = parser.parse_args()
+
 DATA_PATH = 'data/'
 CORPUS_PATH = DATA_PATH + 'last-15-years-corpus.p'
-WINDOW_SIZE = 10
+WINDOW_SIZE = args.window
 OUT_PATH = 'data/collocations-' + strftime('%Y-%m-%d') + f'-wn{WINDOW_SIZE}/'
 
 # create output directory
@@ -23,9 +28,9 @@ corpus = JSTORCorpus.load(CORPUS_PATH)
 # stats
 bigram_measures = nltk.collocations.BigramAssocMeasures()
 
-# # ALL BIGRAMS
-# # find bigrams with 'self'
-# print(strftime("%Y-%m-%d - %H:%M : ") + "finding all bigrams with 'self' in last 15 years...")
+# ALL BIGRAMS
+# find bigrams with 'self'
+print(strftime("%Y-%m-%d - %H:%M : ") + "finding all bigrams with 'self' in last 15 years...")
 
 # # iterate over corpus and construct finder from tokens
 # finder = CorpusBigramCollocationFinder.from_corpus(corpus.iter_lower(), WINDOW_SIZE)
