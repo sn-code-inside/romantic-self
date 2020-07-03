@@ -11,7 +11,7 @@ from utils import JSTORCorpus, TargetedCollocationFinder
 
 DATA_PATH = 'data/'
 CORPUS_PATH = DATA_PATH + 'last-15-years-corpus.p'
-WINDOW_SIZE = 20
+WINDOW_SIZE = 10
 OUT_PATH = 'data/collocations-' + strftime('%Y-%m-%d') + f'-wn{WINDOW_SIZE}/'
 
 # create output directory
@@ -42,7 +42,7 @@ bigram_measures = nltk.collocations.BigramAssocMeasures()
 # find collocations in the context of 'romantic'
 print(strftime("%Y-%m-%d - %H:%M : ") + "finding bigrams with 'self' with 'romantic'...")
 finder = TargetedCollocationFinder.from_corpus(
-    corpus.iter_lower(), 'self', include='romantic', window_size=WINDOW_SIZE)
+    corpus.iter_lower(), 'self', include=['romantic'], window_size=WINDOW_SIZE)
 # save
 ROM_BIGRAMS_PTH = OUT_PATH + 'rom-bigrams-finder.p'
 with open(ROM_BIGRAMS_PTH, 'wb') as file:
@@ -52,7 +52,7 @@ print(strftime("%Y-%m-%d - %H:%M : ") + f"results saved to {ROM_BIGRAMS_PTH}")
 # find collocations outside that context
 print(strftime("%Y-%m-%d - %H:%M : ") + "finding bigrams with 'self' without 'romantic'...")
 finder = TargetedCollocationFinder.from_corpus(
-    corpus.iter_lower(), 'self', exclude='romantic', window_size=WINDOW_SIZE)
+    corpus.iter_lower(), 'self', exclude=['romantic'], window_size=WINDOW_SIZE)
 # save
 NONROM_BIGRAMS_PTH = OUT_PATH + 'nonrom-bigrams-finder.p'
 with open(NONROM_BIGRAMS_PTH, 'wb') as file:
