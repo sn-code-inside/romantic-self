@@ -331,10 +331,16 @@ class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
         tmp_fd = FreqDist()
 
         for (w1, w2), freq in self.ngram_fd.items():
-            if (w2, w1) in tmp_fd:
-                tmp_fd[(w2, w1)] += freq
+            if w1 == self.target:
+                if (w1, w2) in tmp_fd:
+                    tmp_fd[(w1, w2)] += freq
+                else:
+                    tmp_fd[(w1, w2)] = freq
             else:
-                tmp_fd[(w1, w2)] = freq
+                if (w2, w1) in tmp_fd:
+                    tmp_fd[(w2, w1)] += freq
+                else:
+                    tmp_fd[(w2, w1)] = freq
 
         self.ngram_fd = tmp_fd
 
