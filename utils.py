@@ -226,8 +226,8 @@ class AbstractTargetedAssocFinder(AbstractCollocationFinder):
 
     @classmethod
     def _build_new_documents(
-        cls, documents, window_size, pad_left=True, pad_right=True, pad_symbol=None
-    ):
+            cls, documents, window_size, pad_left=True, pad_right=True, pad_symbol=None
+        ):
         """
         Pad the document with the place holder according to the window_size
         """
@@ -244,28 +244,7 @@ class AbstractTargetedAssocFinder(AbstractCollocationFinder):
             return _itertools.chain.from_iterable(
                 _itertools.chain(doc, padding) for doc in documents
             )
-    
-    @classmethod
-    def from_corpus(cls, corpus, tar, window_size=3):
-        """Construct a collocation finder given a corpus of documents,
-        each of which is a list (or iterable) of tokens.
 
-        Arguments:
-        ==========
-        corpus : iterable of iterables of str
-            The corpus of documents in which ngrams are to be found. Each
-            document should be an iterable of tokens.
-        tar : str or sequence
-            1 or more target words, which must appear in the ngram
-            for it to be included in the results.
-        window_size : int
-            The width of the search window. Must be odd and > 3.
-        """
-        # Pad the documents to the right so that they won't overlap when windowed
-        corpus_chain = cls._build_new_documents(corpus, window_size)
-        # Construct finder from stream of tokens
-        return cls.from_words(corpus_chain, tar, window_size)
-        
 class TargetedBigramAssocFinder(AbstractTargetedAssocFinder):
     """Finds associations for a particular word, can distinguish linguistic contexts.
 
@@ -308,7 +287,7 @@ class TargetedBigramAssocFinder(AbstractTargetedAssocFinder):
             raise ValueError("window_size must be odd")
         if not isinstance(target, str):
             raise TypeError("target must be a string")
-        
+
         ctr = int(window_size / 2)
 
         for window in ngrams(words, window_size, pad_left=True, pad_right=True):
@@ -324,9 +303,29 @@ class TargetedBigramAssocFinder(AbstractTargetedAssocFinder):
                 continue
             # Otherwise, if the target is in the window, count the bigram
             if target in window:
-                bfd[(w1,target)] += 1
+                bfd[(w1, target)] += 1
 
         return cls(wfd, bfd, window_size, target)
+
+    @classmethod
+    def from_corpus(cls, corpus, target, window_size=3):
+        """Construct a collocation finder given a corpus of documents,
+        each of which is a list (or iterable) of tokens.
+
+        Arguments:
+        ==========
+        corpus : iterable of iterables of str
+            The corpus of documents in which ngrams are to be found. Each
+            document should be an iterable of tokens.
+        target : str
+            The target word, which must appear in the bigrams
+        window_size : int
+            The width of the search window. Must be odd and > 3.
+        """
+        # Pad the documents to the right so that they won't overlap when windowed
+        corpus_chain = cls._build_new_documents(corpus, window_size)
+        # Construct finder from stream of tokens
+        return cls.from_words(corpus_chain, target, window_size)
 
     def score_ngram(self, score_fn, w1, w2):
         """Returns the score for a given bigram using the given scoring
@@ -415,6 +414,27 @@ class TargetedTrigramAssocFinder(AbstractTargetedAssocFinder):
         del bfd[(tar_2, tar_1)]
 
         return cls(wfd, bfd, tfd, targets, window_size)
+
+    @classmethod
+    def from_corpus(cls, corpus, targets, window_size=3):
+        """Construct a collocation finder given a corpus of documents,
+        each of which is a list (or iterable) of tokens.
+
+        Arguments:
+        ==========
+        corpus : iterable of iterables of str
+            The corpus of documents in which ngrams are to be found. Each
+            document should be an iterable of tokens.
+        targets : list, tuple or set of str
+            2 target words, which must appear in the trigram for it to be
+            counted.
+        window_size : int
+            The width of the search window. Must be odd and > 3.
+        """
+        # Pad the documents to the right so that they won't overlap when windowed
+        corpus_chain = cls._build_new_documents(corpus, window_size)
+        # Construct finder from stream of tokens
+        return cls.from_words(corpus_chain, targets, window_size)
 
     def bigram_finder(self):
         """Constructs a bigram collocation finder with the bigram and unigram
