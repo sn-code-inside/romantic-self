@@ -5,12 +5,14 @@ import re
 import time
 import pickle as p
 from math import inf
+import itertools as _itertools
 
 from bs4 import BeautifulSoup
 import nltk
 from nltk.tokenize import wordpunct_tokenize
 from nltk.probability import FreqDist
 from nltk.util import ngrams
+from nltk.collocations import AbstractCollocationFinder, BigramCollocationFinder
 
 class JSTORCorpus(object):
     """Iterator for streaming files into Gensim. Also allows basic filtering.
@@ -216,12 +218,63 @@ class JSTORCorpus(object):
 
         return corpus
 
-class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
+class AbstractTargetedAssocFinder(AbstractCollocationFinder):
+    """A modified abstract base class for the TargetedAssocFinders. It
+    maintains the structure of nltk.collocations.AbstractCollocationFinder,
+    but provides modified methods for building a finder from a corpus
+    of documents."""
+
+    @classmethod
+    def _build_new_documents(
+        cls, documents, window_size, pad_left=True, pad_right=True, pad_symbol=None
+    ):
+        """
+        Pad the document with the place holder according to the window_size
+        """
+        padding = (pad_symbol,) * (window_size - 1)
+        if pad_right and pad_left:
+            return _itertools.chain.from_iterable(
+                _itertools.chain(padding, doc, padding) for doc in documents
+            )
+        elif pad_left:
+            return _itertools.chain.from_iterable(
+                _itertools.chain(padding, doc) for doc in documents
+            )
+        elif pad_right:
+            return _itertools.chain.from_iterable(
+                _itertools.chain(doc, padding) for doc in documents
+            )
+    
+    @classmethod
+    def from_corpus(cls, corpus, tar, window_size=3):
+        """Construct a collocation finder given a corpus of documents,
+        each of which is a list (or iterable) of tokens.
+
+        Arguments:
+        ==========
+        corpus : iterable of iterables of str
+            The corpus of documents in which ngrams are to be found. Each
+            document should be an iterable of tokens.
+        tar : str or sequence
+            1 or more target words, which must appear in the ngram
+            for it to be included in the results.
+        window_size : int
+            The width of the search window. Must be odd and > 3.
+        """
+        # Pad the documents to the right so that they won't overlap when windowed
+        corpus_chain = cls._build_new_documents(corpus, window_size)
+        # Construct finder from stream of tokens
+        return cls.from_words(corpus_chain, tar, window_size)
+        
+class TargetedBigramAssocFinder(AbstractTargetedAssocFinder):
     """Finds associations for a particular word, can distinguish linguistic contexts.
 
     The main purpose of this class is to investigate the collocations of particular words
     in a large corpus in different linguistic environments."""
-    def __init__(self, word_fd, bigram_fd, target, window_size=2, include=None, exclude=None):
+
+    default_ws = 3
+
+    def __init__(self, word_fd, bigram_fd, target, window_size=3):
         """Construct a TargetedCollocationFinder, given FreqDists for
         appearances of words and (possibly non-contiguous) bigrams.
 
@@ -229,120 +282,162 @@ class TargetedCollocationFinder(nltk.collocations.AbstractCollocationFinder):
         ==========
         word_fd, bigram_fd : FreqDist
             the FreqDists for the words in the corpus and the bigrams
-        window_size : int
-            the size of the sliding window in which collocations are found
+        window_size : int > 3
+            the size of the sliding window in which collocations are found. Must
+            be odd.
         target : str
-            the word whose collocations we are searching for
-        include, exclude : list or tuple of str
-            context words which must or must not appear in the window for bigram to be kept
+            the target word whose collocations are sought
         """
         super().__init__(word_fd, bigram_fd)
         self.window_size = window_size
         self.target = target
-        self.include = include
-        self.exclude = exclude
 
     @classmethod
-    def from_words(cls, words, target, include=None, exclude=None, window_size=2):
+    def from_words(cls, words, target, window_size=3):
         """Construct a TargetedCollocationFinder for all bigrams in the given
-        sequence. When window_size > 2, count non-contiguous bigrams, with the option
-        of keeping only those bigrams where certain context words appears in the window."""
+        sequence. The purpose is to find possible collocates for the target
+        word. The TargetedCollocationFinder looks for unordered associations,
+        rather than ordered ones as the BigramCollocationFinder does."""
 
         wfd = FreqDist()
         bfd = FreqDist()
 
-        if window_size < 2:
-            raise ValueError("Specify window_size at least 2")
-        if include is not None or exclude is not None:
-            if window_size < 3:
-                raise ValueError("When searching with a context, specify window_size at least 3")
-        if include is not None and not isinstance(include, (list, tuple)):
-            raise TypeError("include must be a list or tuple")
-        if exclude is not None and not isinstance(exclude, (list, tuple)):
-            raise TypeError("exclude must be a list or tuple")
+        if window_size < 3:
+            raise ValueError("Specify window_size at least 3")
+        if (window_size % 2) != 1:
+            raise ValueError("window_size must be odd")
+        if not isinstance(target, str):
+            raise TypeError("target must be a string")
+        
+        ctr = int(window_size / 2)
 
-        for window in ngrams(words, window_size, pad_right=True):
+        for window in ngrams(words, window_size, pad_left=True, pad_right=True):
 
-            # As the window slides through the text, count the first word
-            # each time to get the individual word frequencies
-            w1 = window[0]
+            # Get central word in window. Skip if it is left-padding
+            w1 = window[ctr]
             if w1 is None:
                 continue
             wfd[w1] += 1
 
-            # If context is being used, check that this window is valid
-            if include is not None:
-                inc_score = 0
-                for inc in include:
-                    if inc in window:
-                        inc_score += 1
-                if inc_score < 1:
-                    continue
-            if exclude is not None:
-                exc_score = 0
-                for exc in exclude:
-                    if exc not in window:
-                        exc_score += 1
-                if exc_score < 1:
-                    continue
+            # Skip if w1 is target
+            if w1 is target:
+                continue
+            # Otherwise, if the target is in the window, count the bigram
+            if target in window:
+                bfd[(w1,target)] += 1
 
-            # Collect bigram frequencies if target is in the bigram
-            if w1 == target:
-                for w2 in window[1:]:
-                    if w2 is not None:
-                        bfd[(w1, w2)] += 1
-            else:
-                for w2 in window[1:]:
-                    if w2 == target:
-                        bfd[(w1, w2)] += 1
-
-        return cls(wfd, bfd, target, window_size, include, exclude)
-
-    @classmethod
-    def from_corpus(cls, corpus, target, include=None, exclude=None, window_size=2):
-        """Construct a collocation finder given a corpus of documents,
-        each of which is a list (or iterable) of tokens.
-        """
-        # Pad the documents to the right so that they won't overlap when windowed
-        corpus_chain = cls._build_new_documents(corpus, window_size, pad_right=True)
-        # Construct finder from stream of tokens
-        return cls.from_words(corpus_chain, target, include, exclude, window_size)
+        return cls(wfd, bfd, window_size, target)
 
     def score_ngram(self, score_fn, w1, w2):
         """Returns the score for a given bigram using the given scoring
-        function.  Following Church and Hanks (1990), counts are scaled by
-        a factor of 1/(window_size - 1).
-
-        This function is copied from nltk.collocations.BigramCollocationFinder
+        function. No scaling is applied, contra Church and Hanks (1990).
         """
         n_all = self.N
-        n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
+        n_ii = self.ngram_fd[(w1, w2)]
         if not n_ii:
-            return
+            return None
         n_ix = self.word_fd[w1]
         n_xi = self.word_fd[w2]
         return score_fn(n_ii, (n_ix, n_xi), n_all)
 
-    def collapse_ngrams(self):
-        """By default, (w1,w2) and (w2,w1) are treated as seperate ngrams.
-        This method collapses the counts of all bigrams that differ only in
-        order."""
+class TargetedTrigramAssocFinder(AbstractTargetedAssocFinder):
+    """Finds trigrams that include or exclude particular words.
 
-        tmp_fd = FreqDist()
+    The main purpose of this class is to enable trigram search in very large corpora,
+    where the standard TrigramCollocationFinder may exceed memory."""
 
-        for (w1, w2), freq in self.ngram_fd.items():
-            if w1 == self.target:
-                if (w1, w2) in tmp_fd:
-                    tmp_fd[(w1, w2)] += freq
-                else:
-                    tmp_fd[(w1, w2)] = freq
-            else:
-                if (w2, w1) in tmp_fd:
-                    tmp_fd[(w2, w1)] += freq
-                else:
-                    tmp_fd[(w2, w1)] = freq
+    default_ws = 3
 
-        self.ngram_fd = tmp_fd
+    def __init__(self, word_fd, bigram_fd, trigram_fd, targets, window_size=3):
+        """Construct a TargetedTrigramCollocationFinder, given FreqDists for
+        appearances of words, bigrams, and trigrams.
+        """
+        super().__init__(word_fd, trigram_fd)
+        self.bigram_fd = bigram_fd
+        self.targets = targets
+        self.window_size = window_size
+
+    @classmethod
+    def from_words(cls, words, targets, window_size=3):
+        """Construct a TrigramCollocationFinder for all trigrams in the given
+        sequence, filtering for 2 'include' words.
+
+        Arguments:
+        ==========
+        words : iterable of str
+            the sequence of words in which to search for trigrams
+        targets : list, tuple or set of str
+            a sequence of 2 words which must appear in the trigram
+            for it to be counted.
+        window_size : int >= 3, must be odd
+            the size of the search window, must be odd
+        """
+
+        if window_size < 3:
+            raise ValueError("Specify window_size at least 3")
+        if window_size % 2 != 1:
+            raise ValueError("window_size must be odd")
+        if not isinstance(targets, (set, tuple, list)):
+            raise TypeError("targets must be a set, tuple or list")
+        if len(targets) != 2:
+            raise ValueError("targets must contain two words")
+
+        wfd = FreqDist()
+        bfd = FreqDist()
+        tfd = FreqDist()
+        _targets = set(targets)
+        tar_1, tar_2 = _targets
+        ctr = (window_size / 2)
+
+        # in this implementation, we pad both left and right
+        # we also don't respect the order of the ngrams
+        for window in ngrams(words, window_size, pad_left=True, pad_right=True):
+            # Get central word in the window
+            ctr_word = window[ctr]
+            if ctr_word is None:
+                continue
+            wfd[ctr_word] += 1
+            # If target words are present in the window, count
+            # the necessary ngrams
+            present_targets = _targets.intersection(window)
+            # If any of the target words are present, count the bigrams
+            # This will also count instances of (tar_1, tar_2) or
+            # (tar_2, tar_1)
+            if len(present_targets) > 0:
+                for tar in present_targets:
+                    bfd[(ctr_word, tar)] += 1
+            # If both targets are present, count the trigram
+            if len(present_targets) == 2:
+                tfd[(ctr_word, tar_1, tar_2)] += 1
+
+        # Combine counts for (tar_1, tar_2) with (tar_2, tar_1)
+        bfd[(tar_1, tar_2)] += bfd[(tar_2, tar_1)]
+        del bfd[(tar_2, tar_1)]
+
+        return cls(wfd, bfd, tfd, targets, window_size)
+
+    def bigram_finder(self):
+        """Constructs a bigram collocation finder with the bigram and unigram
+        data from this finder. The finder is effectively pre-filtered to only
+        include bigrams with one or other target word.
+        """
+        return BigramCollocationFinder(self.word_fd, self.bigram_fd)
+
+    def score_ngram(self, score_fn, w1, w2, w3):
+        """Returns the score for a given trigram using the given scoring
+        function.
+        """
+        n_all = self.N
+        n_iii = self.ngram_fd[(w1, w2, w3)]
+        if not n_iii:
+            return None
+        n_iix = self.bigram_fd[(w1, w2)]
+        n_ixi = self.bigram_fd[(w1, w3)]
+        n_xii = self.bigram_fd[(w2, w3)]
+        n_ixx = self.word_fd[w1]
+        n_xix = self.word_fd[w2]
+        n_xxi = self.word_fd[w3]
+        return score_fn(n_iii, (n_iix, n_ixi, n_xii), (n_ixx, n_xix, n_xxi), n_all)
 
 class CorpusBigramCollocationFinder(nltk.collocations.BigramCollocationFinder):
     """Wrapper around BigramCollocationFinder that provides a from_corpus method."""
