@@ -8,7 +8,6 @@ from math import inf
 import itertools as _itertools
 
 from bs4 import BeautifulSoup
-import nltk
 from nltk.tokenize import wordpunct_tokenize
 from nltk.probability import FreqDist
 from nltk.util import ngrams
