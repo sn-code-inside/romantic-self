@@ -6,4 +6,6 @@
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=mgf@kent.ac.uk
 #SBATCH --output=/home/mgf/slurm/logs/%j.out
-python ~/romantic-self/association_analysis.py -w 25
+python association_analysis.py -w 15
+python association_analysis.py -w 25
+python association_analysis.py -w 35

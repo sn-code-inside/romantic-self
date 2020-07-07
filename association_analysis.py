@@ -12,20 +12,26 @@ parser.add_argument('-w', dest='window', type=int, help='the window size')
 args = parser.parse_args()
 
 DATA_PATH = 'data/'
-CORPUS_PATH = DATA_PATH + 'last-15-years-corpus.p'
+CORPUS_FILE = 'last-15-years-corpus.p'
 WINDOW_SIZE = args.window
 OUT_PATH = 'data/associations-' + strftime('%Y-%m-%d') + f'-wn{WINDOW_SIZE}/'
 
 # create output directory
 os.makedirs(OUT_PATH)
 
-# import JSTORCorpus
-corpus = JSTORCorpus.load(CORPUS_PATH)
+# construct JSTORCorpus, filter, save
+if CORPUS_FILE in os.listdir(DATA_PATH):
+    corpus = JSTORCorpus.load(DATA_PATH + CORPUS_FILE)
+else:
+    corpus = JSTORCorpus(DATA_PATH + 'metadata', DATA_PATH + 'ocr')
+    corpus.filter_by_year(min_year=2001, max_year=2015)
+    corpus.save(DATA_PATH + CORPUS_FILE)
 
 # find trigrams with both target words
 print(
     strftime("%Y-%m-%d - %H:%M : ") +
-    "finding trigrams with 'romantic' and 'self' in last 15 years..."
+    f"finding trigrams with 'romantic' and 'self' in {DATA_PATH + CORPUS_FILE} " +
+    f"with a window_size of {WINDOW_SIZE}..."
     )
 finder = TargetedTrigramAssocFinder.from_corpus(corpus.iter_lower(), ('romantic', 'self'), WINDOW_SIZE)
 TRI_OUT = OUT_PATH + 'romantic-self-trigrams.p'
@@ -55,6 +61,6 @@ if ('romantic','self') in self_bigrams.ngram_fd:
 ROM_OUT = OUT_PATH + 'romantic-bigrams.p'
 with open(ROM_OUT, 'wb') as file:
     p.dump(romantic_bigrams, file)
-print(strftime("%Y-%m-%d - %H:%M : ") + f"results saved to {ROM_OUT}")
+print(strftime("%Y-%m-%d - %H:%M : ") + f"'romantic' bigrams saved to {ROM_OUT}")
 
 print('END')
