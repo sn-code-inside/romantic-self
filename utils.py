@@ -13,6 +13,7 @@ from nltk.tokenize import wordpunct_tokenize
 from nltk.probability import FreqDist
 from nltk.util import ngrams
 from nltk.collocations import AbstractCollocationFinder, BigramCollocationFinder
+from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
 
 class JSTORCorpus(object):
     """Iterator for streaming files into Gensim. Also allows basic filtering.
@@ -459,7 +460,7 @@ class TargetedTrigramAssocFinder(AbstractTargetedAssocFinder):
         n_xxi = self.word_fd[w3]
         return score_fn(n_iii, (n_iix, n_ixi, n_xii), (n_ixx, n_xix, n_xxi), n_all)
 
-class CorpusBigramCollocationFinder(nltk.collocations.BigramCollocationFinder):
+class CorpusBigramCollocationFinder(BigramCollocationFinder):
     """Wrapper around BigramCollocationFinder that provides a from_corpus method."""
 
     @classmethod
@@ -475,3 +476,44 @@ class CorpusBigramCollocationFinder(nltk.collocations.BigramCollocationFinder):
         corpus_chain = cls._build_new_documents(corpus, window_size, pad_right=True)
         # Construct finder from stream of tokens
         return cls.from_words(corpus_chain, window_size)
+
+class RobustBigramAssocMeasures(BigramAssocMeasures):
+    """Bigrams association measures with a modified _contingency
+    method which disallows negative values. This is a problem
+    when the window_size is large, as in this case, certain words may
+    never appear without a particular collocate. In this case, the count
+    of that word without that collocate may be negative.
+    """
+    @staticmethod
+    def _contingency(n_ii, n_ix_xi_tuple, n_xx):
+        """Calculates values of a bigram contingency table from marginal values."""
+        (n_ix, n_xi) = n_ix_xi_tuple
+        n_oi = max(n_xi - n_ii, 0)
+        n_io = max(n_ix - n_ii, 0)
+        return (n_ii, n_oi, n_io, n_xx - n_ii - n_oi - n_io)
+
+class RobustTrigramAssocMeasures(TrigramAssocMeasures):
+    """Bigrams association measures with a modified _contingency
+    method which disallows negative values. This is a problem
+    when the window_size is large, as in this case, certain words may
+    never appear without a particular collocate. In this case, the count
+    of that word without that collocate may be negative.
+    """
+    @staticmethod
+    def _contingency(n_iii, n_iix_tuple, n_ixx_tuple, n_xxx):
+        """Calculates values of a trigram contingency table (or cube) from
+        marginal values.
+        >>> TrigramAssocMeasures._contingency(1, (1, 1, 1), (1, 73, 1), 2000)
+        (1, 0, 0, 0, 0, 72, 0, 1927)
+        """
+        (n_iix, n_ixi, n_xii) = n_iix_tuple
+        (n_ixx, n_xix, n_xxi) = n_ixx_tuple
+        n_oii = max(n_xii - n_iii, 0)
+        n_ioi = max(n_ixi - n_iii, 0)
+        n_iio = max(n_iix - n_iii, 0)
+        n_ooi = max(n_xxi - n_iii - n_oii - n_ioi, 0)
+        n_oio = max(n_xix - n_iii - n_oii - n_iio, 0)
+        n_ioo = max(n_ixx - n_iii - n_ioi - n_iio, 0)
+        n_ooo = max(n_xxx - n_iii - n_oii - n_ioi - n_iio - n_ooi - n_oio - n_ioo, 0)
+
+        return (n_iii, n_oii, n_ioi, n_ooi, n_iio, n_oio, n_ioo, n_ooo)
