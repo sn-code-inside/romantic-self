@@ -386,7 +386,7 @@ class TargetedTrigramAssocFinder(AbstractTargetedAssocFinder):
         tfd = FreqDist()
         _targets = set(targets)
         tar_1, tar_2 = _targets
-        ctr = (window_size / 2)
+        ctr = int(window_size / 2)
 
         # in this implementation, we pad both left and right
         # we also don't respect the order of the ngrams
