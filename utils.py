@@ -15,7 +15,7 @@ from nltk.collocations import AbstractCollocationFinder, BigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
 
 class JSTORCorpus(object):
-    """Iterator for streaming files into Gensim. Also allows basic filtering.
+    """Iterator for streaming files. Also allows basic filtering.
 
     Arguments:
     - meta_dir (str): path to xml files
@@ -113,6 +113,9 @@ class JSTORCorpus(object):
                 year = meta_xml.find('year')
                 if year is not None:
                     doc_dict['year'] = year.get_text()
+                journal = meta_xml.find('journal-title')
+                if journal is not None:
+                    doc_dict['journal'] = journal.get_text()
 
             # For book chapters:
             elif name.startswith('book-chapter'):
