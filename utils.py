@@ -480,11 +480,11 @@ class CorpusBigramCollocationFinder(BigramCollocationFinder):
         return cls.from_words(corpus_chain, window_size)
 
 class RobustBigramAssocMeasures(BigramAssocMeasures):
-    """Bigrams association measures with a modified _contingency
+    """Bigram association measures with a modified _contingency
     method which disallows negative values. This is a problem
-    when the window_size is large, as in this case, certain words may
-    never appear without a particular collocate. In this case, the count
-    of that word without that collocate may be negative.
+    when the window_size is large. When the window is wide, certain words may
+    never appear without a particular collocate. In this case, the observed
+    frequency of the word *without* that collocate may be negative.
     """
     @staticmethod
     def _contingency(n_ii, n_ix_xi_tuple, n_xx):
@@ -495,11 +495,11 @@ class RobustBigramAssocMeasures(BigramAssocMeasures):
         return (n_ii, n_oi, n_io, n_xx - n_ii - n_oi - n_io)
 
 class RobustTrigramAssocMeasures(TrigramAssocMeasures):
-    """Bigrams association measures with a modified _contingency
+    """Trigram association measures with a modified _contingency
     method which disallows negative values. This is a problem
-    when the window_size is large, as in this case, certain words may
-    never appear without a particular collocate. In this case, the count
-    of that word without that collocate may be negative.
+    when the window_size is large. When the window is wide, certain words may
+    never appear without particular collocates. In this case, the observed
+    frequency of the word *without* that collocate may be negative.
     """
     @staticmethod
     def _contingency(n_iii, n_iix_tuple, n_ixx_tuple, n_xxx):
