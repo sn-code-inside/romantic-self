@@ -1,3 +1,11 @@
 data/
 models/
 __pycache__/
+scratchpads/
+
+# novel-corpus files with restrictive terms
+hermsprong.txt
+walsingham.txt
+glenarvon.txt
+zofloya.txt
+asylum.txt
