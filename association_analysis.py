@@ -5,7 +5,7 @@ import pickle as p
 import os
 import argparse
 
-from utils import JSTORCorpus, TargetedTrigramAssocFinder
+from romanticself import JSTORCorpus, TargetedTrigramAssocFinder
 
 parser = argparse.ArgumentParser(description="Perform collocation analysis on corpus")
 parser.add_argument('-w', dest='window', type=int, help='the window size')
