@@ -1,6 +1,9 @@
 # Hidden directories
 scratchpads/
 
+# Conceal script files (private user data)
+*.sh
+
 # JSTOR data cannot be distributed
 data/jstor-data
 
