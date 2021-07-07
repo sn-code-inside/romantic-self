@@ -1,7 +1,9 @@
-data/
-models/
+# Hidden directories
 __pycache__/
 scratchpads/
+
+# JSTOR data cannot be distributed
+data/jstor-data
 
 # novel-corpus files with restrictive terms
 hermsprong.txt
