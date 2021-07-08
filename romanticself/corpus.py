@@ -258,8 +258,79 @@ class NovelCorpus(object):
             # Yield tokens
             yield self.tokenizer(text)
 
+    def to_csv(self, out_pth="novel_corpus_summary.csv"):
+        csv = "Title,Author,Year,Nation,Gothic,Network,Source,Available Online\n"
+
+        def _src(url):
+            if url.startswith("http://hdl.handle.net"):
+                return "Oxford Text Archive"
+            if url.startswith("https://gutenberg.org"):
+                return "Project Gutenberg"
+            if url.startswith("https://www.proquest.com"):
+                return "Literature Online (Proquest)"
+            if url.startswith("https://en.wikisource.org"):
+                return "Wikisource"
+            else:
+                raise ValueError("Source not known.")
+
+        def _avail(licence):
+            if licence == "Restrictive":
+                return "No"
+            else:
+                return "Yes"
+
+        def _bool2str(bool_val):
+            if bool_val:
+                return "Yes"
+            else:
+                return "No"
+
+        sorted_manifest = sorted(self.corpus_meta.values(), key=lambda x: x["year"])
+
+        for novel in sorted_manifest:
+            # Write to csv
+            csv += novel["short_title"] + ","
+            csv += novel["author"] + ","
+            csv += str(novel["year"]) + ","
+            csv += novel["nation"] + ","
+            csv += _bool2str(novel["gothic"]) + ","
+            csv += _bool2str(novel["network"]) + ","
+            if isinstance(novel["source"], list):
+                csv += _src(novel["source"][0]) + ","
+            else:
+                csv += _src(novel["source"]) + ","
+            csv += _avail(novel["licence"])
+            csv += "\n"
+
+        with open(out_pth, "wt") as file:
+            file.write(csv)
+
 class SonnetCorpus(object):
     """Iterator for streaming sonnet files."""
 
     def __init__(self):
-        raise NotImplemented
+        return NotImplemented
+
+def ota_xml_to_txt(dir="."):
+    """Helper function that converts OTA xml files into raw text. If you have
+    downloaded several files for a multi-volume work, and wish to concatenate them,
+    you will need to do this by hand.
+    
+    Arguments:
+    - dir (str): the directory where the files are held, and where the new
+                .txt files will be written."""
+
+    xml_files = [file for file in os.listdir(dir) if file.endswith(".xml")]
+
+    print(f"Files found: {', '.join(xml_files)}")
+
+    for xml_path in xml_files:
+        with open(xml_path, mode="rt") as file:
+            soup = BeautifulSoup(file, features="html.parser")
+        text = soup.text
+        text = text.replace("ſ", "s")
+        txt_path = xml_path[:-4] + ".txt"
+        with open(txt_path, mode="wt") as file:
+            file.write(text)
+        
+        print(f"Text from {xml_path} written to {txt_path}")

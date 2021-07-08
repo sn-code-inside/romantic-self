@@ -252,8 +252,8 @@
         "source":"https://gutenberg.org/ebooks/105.txt.utf-8",
         "licence":"Gutenberg"
     },
-    "mary-brunton.txt":{
-        "author":"Self-Control",
+    "self-control.txt":{
+        "author":"Mary Brunton",
         "year":1811,
         "short_title":"Self-Control",
         "gothic":false,
