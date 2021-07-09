@@ -247,6 +247,9 @@ class NovelCorpus(object):
 
             # Yield tokens
             yield self.tokenizer(text)
+    
+    def __len__(self):
+        return len(self.corpus_meta)
 
     def to_csv(self, out_pth="novel_corpus_summary.csv"):
         csv = "Title,Author,Year,Nation,Gothic,Network,Source,Available Online\n"
@@ -319,11 +322,14 @@ class NovelCorpus(object):
             yield self.tokenizer(text)
 
     def _read_normalise(self, text_path):
-        """Reads in text file and normalises it."""
+        """Reads in text file and normalises it.
+        
+        Arguments:
+        - text_path (str): path to text file"""
         
         # Import text
-        with open(text_path, "rt") as file:
-            text = file.load(errors="ignore")
+        with open(text_path, mode="rt", errors="ignore") as file:
+            text = file.read()
 
         # Strip gutenberg bufferplate
         text = self.GUT_HEADER_RGX.sub("", text)
