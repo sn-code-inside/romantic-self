@@ -241,19 +241,9 @@ class NovelCorpus(object):
     def __iter__(self):
         """Yields tokenized texts from the corpus"""
         for key in self.corpus_meta:
-            # Import text
-            with open(self.data_dir + "/" + key, "rt") as file:
-                text = file.load(errors="ignore")
-
-            # Strip gutenberg bufferplate
-            text = self.GUT_HEADER_RGX.sub("", text)
-            text = self.GUT_LICENCE_RGX.sub("", text)
-
-            # Normalise
-            text = text.lower()
-            text = re.sub(r'_(?=\w)', '', text) # Strip underscores from before words
-            text = re.sub(r'(?<=(\w))_', ' ', text) # And after
-            text = re.sub(r' \d+(th|rd|nd|st|mo|\W+)\b', ' ', text) # Also drop numbers 
+            
+            # Read in and normalise text
+            text = self._read_normalise(os.path.join(self.data_dir, key))
 
             # Yield tokens
             yield self.tokenizer(text)
@@ -304,6 +294,48 @@ class NovelCorpus(object):
 
         with open(out_pth, "wt") as file:
             file.write(csv)
+
+    def iter_filter(self, **kwargs):
+        """Iterates over parts of the corpus, defined by filter. Only novels with the
+        attributes specified in **kwargs will be included.
+
+        e.g. corpus.iter_filter(year=1799) will return only novels published in 1799
+        """
+        for key in self.corpus_meta:
+
+            skip = False
+
+            # Check each filter keyword
+            for filter,val in kwargs.items(): 
+                if self.corpus_meta[key][filter] != val:
+                    skip = True
+
+            if skip:
+                continue
+            else:
+                text = self._read_normalise(os.path.join(self.data_dir, key))
+
+            # Yield tokens
+            yield self.tokenizer(text)
+
+    def _read_normalise(self, text_path):
+        """Reads in text file and normalises it."""
+        
+        # Import text
+        with open(text_path, "rt") as file:
+            text = file.load(errors="ignore")
+
+        # Strip gutenberg bufferplate
+        text = self.GUT_HEADER_RGX.sub("", text)
+        text = self.GUT_LICENCE_RGX.sub("", text)
+
+        # Normalise
+        text = text.lower()
+        text = re.sub(r'_(?=\w)', '', text) # Strip underscores from before words
+        text = re.sub(r'(?<=(\w))_', ' ', text) # And after
+        text = re.sub(r' \d+(th|rd|nd|st|mo|\W+)\b', ' ', text) # Also drop numbers 
+
+        return text
 
 class SonnetCorpus(object):
     """Iterator for streaming sonnet files."""
