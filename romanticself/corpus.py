@@ -251,8 +251,8 @@ class NovelCorpus(object):
 
             # Normalise
             text = text.lower()
-            text = re.sub(r'(?<= )(\W|_)+(?=\w)', '', text) # Strip punctuation from before words
-            text = re.sub(r'(?<=(\w))(\W|_)+(?=\w)', ' ', text) # And after
+            text = re.sub(r'_(?=\w)', '', text) # Strip underscores from before words
+            text = re.sub(r'(?<=(\w))_', ' ', text) # And after
             text = re.sub(r' \d+(th|rd|nd|st|mo|\W+)\b', ' ', text) # Also drop numbers 
 
             # Yield tokens
