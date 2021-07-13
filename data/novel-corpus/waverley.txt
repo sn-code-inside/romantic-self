@@ -23,13 +23,6 @@ Character set encoding: UTF-8
 
 
 
-Produced by David Widger. Reference was liberally made to an early
-PG version produced by Robert Rowe and the Online Distributed
-Proofreading Team.
-
-
-
-
 
 WAVERLEY
 

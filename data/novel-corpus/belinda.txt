@@ -25,12 +25,6 @@ Character set encoding: UTF-8
 
 
 
-Produced by Jonathan Ingram, Sheila Vogtmann, David Widger and PG
-Distributed Proofreaders
-
-
-
-
 
 
 

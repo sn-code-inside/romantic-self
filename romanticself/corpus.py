@@ -228,6 +228,9 @@ class NovelCorpus(object):
     GUT_HEADER_RGX = re.compile(r'\A.+\*{3} {0,2}START OF.{,200}\*{3}', flags = re.DOTALL)
     GUT_LICENCE_RGX = re.compile(r'\*{3} {0,2}END OF.+', flags = re.DOTALL)
 
+    # For normalisation
+    WORD_RGX = re.compile('[A-Za-z]')
+
     def __init__(self, data_dir, tokenizer=word_tokenize):
         self.data_dir = data_dir
         self.manifest_pth = data_dir + "/manifest.json"
@@ -237,6 +240,9 @@ class NovelCorpus(object):
         # Import manifest file
         with open(self.manifest_pth, "rt") as file:
             self.corpus_meta = json.load(file)
+        
+        # Print import message
+        print(f"{len(self)} novels found in {self.data_dir}.")
     
     def __iter__(self):
         """Yields tokenized texts from the corpus"""
@@ -246,7 +252,7 @@ class NovelCorpus(object):
             text = self._read_normalise(os.path.join(self.data_dir, key))
 
             # Yield tokens
-            yield self.tokenizer(text)
+            yield [tk for tk in self.tokenizer(text) if self.WORD_RGX.match(tk)]
     
     def __len__(self):
         return len(self.corpus_meta)

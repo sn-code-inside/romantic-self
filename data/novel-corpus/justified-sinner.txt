@@ -22,11 +22,6 @@ Language: English
 
 
 
-Produced by Andreas Philipp and Martin Adamson. HTML version
-by Al Haines.
-
-
-
 
 
 

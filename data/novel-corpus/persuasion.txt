@@ -21,16 +21,6 @@ Language: English
 
 
 
-Produced by Sharon Partridge and Martin Ward. HTML version
-by Al Haines.
-
-
-
-
-
-
-
-
 
 
 Persuasion
@@ -8366,10 +8356,6 @@ Finis
 
 
 
-
-
-
-End of the Project Gutenberg EBook of Persuasion, by Jane Austen
 
 *** END OF THIS PROJECT GUTENBERG EBOOK PERSUASION ***
 
