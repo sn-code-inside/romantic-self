@@ -218,7 +218,11 @@ class JSTORCorpus(object):
         return corpus
 
 class NovelCorpus(object):
-    """Iterator for streaming files.
+    """Iterator for loading and tokenising files.
+
+    NB: Unliked the JSTORCorpus class, this class loads the texts into memory,
+    so is only appropriate for relatively small corpora (it was developed for a
+    project using only 40 novels).
     
     Arguments:
     - data_dir (str): path to txt files
@@ -234,28 +238,30 @@ class NovelCorpus(object):
     def __init__(self, data_dir, tokenizer=word_tokenize):
         self.data_dir = data_dir
         self.manifest_pth = data_dir + "/manifest.json"
-        self.corpus_meta = dict()
+        self.data = dict()
         self.tokenizer = tokenizer
 
         # Import manifest file
         with open(self.manifest_pth, "rt") as file:
-            self.corpus_meta = json.load(file)
+            self.data = json.load(file)
         
+        # Import and tokenize novels
+        for key in self.data:
+            text = self._read_normalise(os.path.join(self.data_dir, key))
+            tokens = [tk for tk in self.tokenizer(text) if self.WORD_RGX.match(tk)]
+            self.data[key]["tokens"] = tokens
+
         # Print import message
-        print(f"{len(self)} novels found in {self.data_dir}.")
+        print(f"{len(self)} novels imported from {self.data_dir}.")
     
     def __iter__(self):
         """Yields tokenized texts from the corpus"""
-        for key in self.corpus_meta:
-            
-            # Read in and normalise text
-            text = self._read_normalise(os.path.join(self.data_dir, key))
-
+        for key in self.data:
             # Yield tokens
-            yield [tk for tk in self.tokenizer(text) if self.WORD_RGX.match(tk)]
+            yield self.data[key]["tokens"]
     
     def __len__(self):
-        return len(self.corpus_meta)
+        return len(self.data)
 
     def to_csv(self, out_pth="novel_corpus_summary.csv"):
         csv = "Title,Author,Year,Nation,Gothic,Network,Source,Available Online\n"
@@ -284,7 +290,7 @@ class NovelCorpus(object):
             else:
                 return "No"
 
-        sorted_manifest = sorted(self.corpus_meta.values(), key=lambda x: x["year"])
+        sorted_manifest = sorted(self.data.values(), key=lambda x: x["year"])
 
         for novel in sorted_manifest:
             # Write to csv
@@ -310,22 +316,20 @@ class NovelCorpus(object):
 
         e.g. corpus.iter_filter(year=1799) will return only novels published in 1799
         """
-        for key in self.corpus_meta:
+        for key in self.data:
 
             skip = False
 
             # Check each filter keyword
             for filter,val in kwargs.items(): 
-                if self.corpus_meta[key][filter] != val:
+                if self.data[key][filter] != val:
                     skip = True
 
             if skip:
                 continue
-            else:
-                text = self._read_normalise(os.path.join(self.data_dir, key))
 
             # Yield tokens
-            yield self.tokenizer(text)
+            yield self.data[key]["tokens"]
 
     def _read_normalise(self, text_path):
         """Reads in text file and normalises it.
@@ -348,6 +352,20 @@ class NovelCorpus(object):
         text = re.sub(r' \d+(th|rd|nd|st|mo|\W+)\b', ' ', text) # Also drop numbers 
 
         return text
+
+    def yield_metadata(self, *args):
+        """Yields requested metadata about novels in corpus.
+        
+        Arguments:
+        - *args (str): metadata values to return"""
+        
+        requested_metadata = []
+
+        for val in self.data.values():
+            requested_metadata.append(tuple(val[arg] for arg in args))
+        
+        return requested_metadata
+
 
 class SonnetCorpus(object):
     """Iterator for streaming sonnet files."""
