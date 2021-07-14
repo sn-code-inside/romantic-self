@@ -366,7 +366,6 @@ class NovelCorpus(object):
         
         return requested_metadata
 
-
 class SonnetCorpus(object):
     """Iterator for streaming sonnet files."""
 

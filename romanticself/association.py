@@ -1,11 +1,13 @@
 """Utilities for accessing JSTOR Data for Research Corpus"""
 
 import itertools as _itertools
+import re as _re
 
 from nltk.probability import FreqDist
 from nltk.util import ngrams
 from nltk.collocations import AbstractCollocationFinder, BigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
+from nltk.corpus import stopwords
 
 class AbstractTargetedAssocFinder(AbstractCollocationFinder):
     """A modified abstract base class for the TargetedAssocFinders. It
@@ -305,3 +307,15 @@ class RobustTrigramAssocMeasures(TrigramAssocMeasures):
         n_ooo = max(n_xxx - n_iii - n_oii - n_ioi - n_iio - n_ooi - n_oio - n_ioo, 0)
 
         return (n_iii, n_oii, n_ioi, n_ooi, n_iio, n_oio, n_ioo, n_ooo)
+
+def stopword_filter(*ngram):
+    """Returns true if the ngram contains junk or a stopword"""
+
+    sw = set(stopwords.words('english'))
+
+    if not sw.isdisjoint(ngram):
+        return True
+    elif any([_re.match(r'[\W\d]+', wd) for wd in ngram]):
+        return True
+    else:
+        return False
