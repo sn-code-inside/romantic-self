@@ -6,9 +6,12 @@ import time
 import pickle as p
 import json
 from math import inf
+from itertools import chain
 
 from bs4 import BeautifulSoup
-from nltk.tokenize import wordpunct_tokenize, word_tokenize
+from nltk import word_tokenize, wordpunct_tokenize, pos_tag_sents
+from nltk.corpus import stopwords
+import nltk
 
 class JSTORCorpus(object):
     """Iterator for streaming files. Also allows basic filtering.
@@ -365,6 +368,101 @@ class NovelCorpus(object):
             requested_metadata.append(tuple(val[arg] for arg in args))
         
         return requested_metadata
+
+class NovelPOSCorpus(NovelCorpus):
+    """Iterator for Novel corpus, which yield part-of-speech-tagged tokens instead of raw tokens.
+
+    Only common nouns, adjectives, adverbs and verbs are retained. Common stopwords removed.
+    
+    Arguments:
+    - data_dir (str): path to txt files
+    - tokenizer (fn): tokenizer of choice. Defaults to nltk.word_tokenize"""
+
+    # Regex to filter punctuation out of tokens
+    WORD_POS_RGX = re.compile('[A-Za-z]+_.+')
+
+    # Mapping for UPenn tags
+    TAG_MAP = {
+        "JJ":"adjective",
+        "JJR":"adjective",
+        "JJS":"adjective",
+        "NN":"noun",
+        "NNS":"noun",
+        "RB":"adverb",
+        "RBR":"adverb",
+        "RBS":"adverb",
+        "VB":"verb",
+        "VBD":"verb",
+        "VBG":"verb",
+        "VBN":"verb",
+        "VBP":"verb",
+        "VBZ":"verb"
+    }
+
+    def __init__(self, data_dir, tokenizer=word_tokenize):
+        self.data_dir = data_dir
+        self.manifest_pth = data_dir + "/manifest.json"
+        self.data = dict()
+        self.tokenizer = tokenizer
+
+        # Import manifest file
+        with open(self.manifest_pth, "rt") as file:
+            self.data = json.load(file)
+        
+        print(f"Found {len(self)} novels in {self.data_dir}.")
+
+        # Import and tokenize novels
+        iter_count = 0
+        for key in self.data:
+            tokens = self._read_tag(os.path.join(self.data_dir, key))
+            self.data[key]["tokens"] = tokens
+            
+            iter_count += 1
+            if iter_count % 10 == 0:
+                print(f"{iter_count} novels imported ...")
+
+        # Print import message
+        print(f"{len(self)} novels imported, tagged and tokenised from {self.data_dir}.")
+    
+    def _read_tag(self, text_path):
+        """Reads in text file, tags and normalises it. Only common nouns, adjectives,
+        adverbs and verbs are retained.
+        
+        Arguments:
+        - text_path (str): path to text file"""
+
+        eng_stops = set(stopwords.words("english"))
+        
+        # Import text
+        with open(text_path, mode="rt", errors="ignore") as file:
+            text = file.read()
+
+        # Strip gutenberg bufferplate
+        text = self.GUT_HEADER_RGX.sub("", text)
+        text = self.GUT_LICENCE_RGX.sub("", text)
+
+        # Normalise
+        text = re.sub(r'_(?=\w)', '', text) # Strip underscores from before words
+        text = re.sub(r'(?<=(\w))_', ' ', text) # And after
+
+        # Split into sentences
+        sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+        sentences = sent_detector.tokenize(text)
+
+        # Tokenise and tag
+        sentences = [self.tokenizer(sent) for sent in sentences]
+        sentences = pos_tag_sents(sentences)
+
+        # Reformat and filter tokens
+        tokens = []
+        for token,tag in chain(*sentences):
+            token = token.lower()
+            if token in eng_stops:
+                continue
+            if tag in self.TAG_MAP:
+                tokens.append(token + "_" + self.TAG_MAP[tag])
+
+        return tokens
 
 class SonnetCorpus(object):
     """Iterator for streaming sonnet files."""
