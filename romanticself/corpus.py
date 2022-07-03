@@ -1,5 +1,7 @@
 """Utilities for accessing Research Corpora"""
 
+from abc import ABC
+from functools import partial
 import os
 import re
 import time
@@ -7,11 +9,59 @@ import pickle as p
 import json
 from math import inf
 from itertools import chain
+from typing import Callable
 
 from bs4 import BeautifulSoup
 from nltk import word_tokenize, wordpunct_tokenize, pos_tag_sents
 from nltk.corpus import stopwords
 import nltk
+from lxml import etree
+import lxml
+
+class EagerCorpus(ABC):
+    """Abstract class for Eager Corpora, e.g. novel and sonnet corpora, providing
+    consistent basic interface."""
+
+    def __init__(self):
+        self.data = dict()
+
+    def __iter__(self):
+        """Yields tokenized texts from the corpus"""
+        for key in self.data:
+            # Yield tokens
+            yield self.data[key]["tokens"]
+    
+    def __len__(self):
+        return len(self.data)
+
+    def yield_metadata(self, *args):
+        """Yields requested metadata about novels in corpus.
+        
+        Arguments:
+        - *args (str): metadata values to return"""
+        
+        requested_metadata = []
+
+        for val in self.data.values():
+            requested_metadata.append(tuple(val[arg] for arg in args))
+        
+        return requested_metadata
+
+    def iter_filter(self, **kwargs):
+        """Iterates over parts of the corpus, defined by filter. Only novels with the
+        attributes specified in **kwargs will be included.
+
+        e.g. corpus.iter_filter(year=1799) will return only novels published in 1799
+        """
+        for key in self.data:
+
+            # Check each filter keyword
+            for filter,val in kwargs.items(): 
+                if self.data[key][filter] != val:
+                    continue
+
+            # Yield tokens
+            yield self.data[key]["tokens"]
 
 class JSTORCorpus(object):
     """Iterator for streaming files. Also allows basic filtering.
@@ -220,7 +270,7 @@ class JSTORCorpus(object):
 
         return corpus
 
-class NovelCorpus(object):
+class NovelCorpus(EagerCorpus):
     """Iterator for loading and tokenising files.
 
     NB: Unliked the JSTORCorpus class, this class loads the texts into memory,
@@ -238,7 +288,7 @@ class NovelCorpus(object):
     # For normalisation
     WORD_RGX = re.compile('[A-Za-z]')
 
-    def __init__(self, data_dir, tokenizer=word_tokenize):
+    def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]]=word_tokenize):
         self.data_dir = data_dir
         self.manifest_pth = data_dir + "/manifest.json"
         self.data = dict()
@@ -256,15 +306,6 @@ class NovelCorpus(object):
 
         # Print import message
         print(f"{len(self)} novels imported from {self.data_dir}.")
-    
-    def __iter__(self):
-        """Yields tokenized texts from the corpus"""
-        for key in self.data:
-            # Yield tokens
-            yield self.data[key]["tokens"]
-    
-    def __len__(self):
-        return len(self.data)
 
     def to_csv(self, out_pth="novel_corpus_summary.csv"):
         csv = "Title,Author,Year,Nation,Gothic,Network,Source,Available Online\n"
@@ -313,27 +354,6 @@ class NovelCorpus(object):
         with open(out_pth, "wt") as file:
             file.write(csv)
 
-    def iter_filter(self, **kwargs):
-        """Iterates over parts of the corpus, defined by filter. Only novels with the
-        attributes specified in **kwargs will be included.
-
-        e.g. corpus.iter_filter(year=1799) will return only novels published in 1799
-        """
-        for key in self.data:
-
-            skip = False
-
-            # Check each filter keyword
-            for filter,val in kwargs.items(): 
-                if self.data[key][filter] != val:
-                    skip = True
-
-            if skip:
-                continue
-
-            # Yield tokens
-            yield self.data[key]["tokens"]
-
     def _read_normalise(self, text_path):
         """Reads in text file and normalises it.
         
@@ -355,19 +375,6 @@ class NovelCorpus(object):
         text = re.sub(r' \d+(th|rd|nd|st|mo|\W+)\b', ' ', text) # Also drop numbers 
 
         return text
-
-    def yield_metadata(self, *args):
-        """Yields requested metadata about novels in corpus.
-        
-        Arguments:
-        - *args (str): metadata values to return"""
-        
-        requested_metadata = []
-
-        for val in self.data.values():
-            requested_metadata.append(tuple(val[arg] for arg in args))
-        
-        return requested_metadata
 
 class NovelPOSCorpus(NovelCorpus):
     """Iterator for Novel corpus, which yield part-of-speech-tagged tokens instead of raw tokens.
@@ -464,11 +471,128 @@ class NovelPOSCorpus(NovelCorpus):
 
         return tokens
 
-class SonnetCorpus(object):
+class SonnetCorpus(EagerCorpus):
     """Iterator for streaming sonnet files."""
 
-    def __init__(self):
-        return NotImplemented
+    def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]]=word_tokenize):
+        self.data_dir = data_dir
+        self.data = dict()
+        self.tokenizer = tokenizer
+        self.sequences = dict()
+
+        # XML methods
+        self._PARSER = etree.XMLParser()
+        self._NS = {"tei": "http://www.tei-c.org/ns/1.0"}
+        self._make_xpath_query = partial(etree.XPath, namespaces=self._NS)
+        
+        # Iterate over XMLs and import sonnets
+        xml_files = (file for file in os.listdir(self.data_dir) if file.endswith(".xml"))
+        for xml_file in xml_files:
+            with open(xml_file, "rb") as xml_bytes:
+                sonnet_tree = etree.parse(xml_bytes, parser=self._PARSER)
+                author = self._get_author(sonnet_tree)
+                author_surname = self._get_author_surname(sonnet_tree)
+                self.data, self.sequences = self._extract_sonnets(sonnet_tree, author, author_surname)
+
+    def _get_text_node(self, xpath:str, sonnet_tree:etree._ElementTree) -> str:
+        """Evaluates xpath and returns the text of the first matching node.
+        
+        NB: Recurses through all child nodes, returning all inner text"""
+        get_nodes = self._make_xpath_query(xpath)
+        nodes = get_nodes(sonnet_tree)
+        return sonnet_tree.tostring(nodes[0], method="text") if nodes else ''
+
+    def _get_author(self, sonnet_tree:etree._ElementTree) -> str:
+        return self._get_text_node("//tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author", sonnet_tree)
+
+    def _get_author_surname(self, sonnet_tree:etree._ElementTree) -> str:
+        return self._get_text_node("//tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:surname", sonnet_tree)
+
+    def _extract_sonnets(self, sonnet_tree:etree._ElementTree, author: str, author_surname: str) -> tuple[dict, dict]:
+        """Iterates over sonnets in the xml tree, and appends them to self.data"""
+
+        data_dict = dict()
+        seq_dict = dict()
+
+        template_dict = {"author": author_surname, "author_full_name": author_surname}
+        get_line_groups = self._make_xpath_query("//tei:body/tei:lg | //tei:body/tei:div/tei:lg")
+
+        # Trackers for idx when recursing through sequences
+        sonnet_idx = 0
+        sequence_idx = 0
+
+        for line_group in get_line_groups(sonnet_tree):
+            sonnet_idx += 1
+
+            match line_group.get("type"):
+                case "sequence":
+                    new_sonnets, new_sequence, sonnet_idx, sequence_idx = self._handle_sequence(line_group, template_dict, sonnet_idx, sequence_idx)
+                    data_dict = data_dict | new_sonnets
+                    seq_dict = seq_dict | new_sequence
+                    sonnet_idx += sonnet_idx
+                    sequence_idx += 1
+                case "sonnet":
+                    data_dict = data_dict | self._handle_sonnet(line_group, template_dict, sonnet_idx)
+        
+        return data_dict, seq_dict
+
+    def _handle_sonnet(self, line_group:etree._Element, template_dict: dict, sonnet_idx: int) -> dict:
+
+        line_tokens = self._get_sonnet_tokens(line_group)
+
+        sonnet_dict = {
+            "title": self._get_sonnet_title(line_group),
+            "metre": self._get_sonnet_metre(line_group),
+            "rhyme_scheme": self._get_sonnet_rhyme_scheme(line_group),
+            "line_tokens": line_tokens,
+            "tokens": (token for line in line_tokens for token in line),
+            **template_dict
+        }
+
+        return {(template_dict['author'], sonnet_idx): sonnet_dict}
+
+    def _handle_sequence(self, line_group:etree._Element, template_dict: dict, sonnet_idx: int, sequence_idx: int) -> tuple[dict, dict, int, int]:
+
+        new_sonnets = {}
+        sequence_data = {}
+
+        for element in line_group:   # type: ignore
+            match element.tag:
+                case "head":
+                    sequence_data["title"] = element.text
+                case "sonnet":
+                    new_sonnets = new_sonnets | self._handle_sonnet(element, template_dict, sonnet_idx)
+
+        # Record all sonnets in sequence
+        sequence_data["sonnets"] = list(new_sonnets)
+        sequence_data["num_sonnets"] = len(sequence_data["sonnets"])
+
+        new_sequence = {(template_dict["author"], sequence_idx): sequence_data}
+
+        return new_sonnets, new_sequence, sonnet_idx, sequence_idx
+
+    def _get_sonnet_title(self, line_group:etree._Element) -> list:
+        return self.tokenizer(line_group[0].text) if line_group[0].tag == "head" else []
+    
+    def _get_sonnet_metre(self, line_group:etree._Element) -> dict:
+        metre = {}
+        
+        if line_group.get("met"):  # type: ignore
+            metre["sonnet"] = line_group.get("met")  # type: ignore
+        
+        for idx, line in enumerate(line_group.iter("l")): # type: ignore
+            if line.get("met"):
+                metre[idx] = line.get("met")
+        
+        return metre
+    
+    def _get_sonnet_rhyme_scheme(self, line_group) -> str:
+        return line_group.get("rhyme") # type: ignore
+
+    def _get_sonnet_tokens(self, line_group) -> list[list[str]]:
+        """Returns tokenised representation of the sonnet, with each line's tokens in its
+        own list."""
+        return [self.tokenizer(line.text) for line in line_group.iter("l")]
 
 def ota_xml_to_txt(dir="."):
     """Helper function that converts OTA xml files into raw text. If you have
