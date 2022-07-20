@@ -1,6 +1,7 @@
 """Utilities for accessing Research Corpora"""
 
 from abc import ABC
+from collections import Counter
 from functools import partial
 import os
 import re
@@ -16,7 +17,6 @@ from nltk import word_tokenize, wordpunct_tokenize, pos_tag_sents
 from nltk.corpus import stopwords
 import nltk
 from lxml import etree
-import lxml
 
 class EagerCorpus(ABC):
     """Abstract class for Eager Corpora, e.g. novel and sonnet corpora, providing
@@ -488,11 +488,17 @@ class SonnetCorpus(EagerCorpus):
         # Iterate over XMLs and import sonnets
         xml_files = (file for file in os.listdir(self.data_dir) if file.endswith(".xml"))
         for xml_file in xml_files:
-            with open(xml_file, "rb") as xml_bytes:
+            with open(os.path.join(data_dir, xml_file), "rb") as xml_bytes:
                 sonnet_tree = etree.parse(xml_bytes, parser=self._PARSER)
                 author = self._get_author(sonnet_tree)
                 author_surname = self._get_author_surname(sonnet_tree)
-                self.data, self.sequences = self._extract_sonnets(sonnet_tree, author, author_surname)
+                print(f"Extracting {author_surname}'s sonnets from {xml_file}...")
+                new_sonnets, new_sequences = self._extract_sonnets(sonnet_tree, author, author_surname)
+                self.data = self.data | new_sonnets
+                self.sequences = self.sequences | new_sequences
+        
+        # Display success
+        print(self)
 
     def _get_text_node(self, xpath:str, sonnet_tree:etree._ElementTree) -> str:
         """Evaluates xpath and returns the text of the first matching node.
@@ -500,7 +506,7 @@ class SonnetCorpus(EagerCorpus):
         NB: Recurses through all child nodes, returning all inner text"""
         get_nodes = self._make_xpath_query(xpath)
         nodes = get_nodes(sonnet_tree)
-        return sonnet_tree.tostring(nodes[0], method="text") if nodes else ''
+        return etree.tostring(nodes[0], method="text", encoding="unicode").strip() if nodes else '' # type: ignore
 
     def _get_author(self, sonnet_tree:etree._ElementTree) -> str:
         return self._get_text_node("//tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author", sonnet_tree)
@@ -514,7 +520,7 @@ class SonnetCorpus(EagerCorpus):
         data_dict = dict()
         seq_dict = dict()
 
-        template_dict = {"author": author_surname, "author_full_name": author_surname}
+        template_dict = {"author": author_surname, "author_full_name": author}
         get_line_groups = self._make_xpath_query("//tei:body/tei:lg | //tei:body/tei:div/tei:lg")
 
         # Trackers for idx when recursing through sequences
@@ -522,21 +528,19 @@ class SonnetCorpus(EagerCorpus):
         sequence_idx = 0
 
         for line_group in get_line_groups(sonnet_tree):
-            sonnet_idx += 1
 
             match line_group.get("type"):
                 case "sequence":
                     new_sonnets, new_sequence, sonnet_idx, sequence_idx = self._handle_sequence(line_group, template_dict, sonnet_idx, sequence_idx)
                     data_dict = data_dict | new_sonnets
                     seq_dict = seq_dict | new_sequence
-                    sonnet_idx += sonnet_idx
-                    sequence_idx += 1
                 case "sonnet":
-                    data_dict = data_dict | self._handle_sonnet(line_group, template_dict, sonnet_idx)
+                    sonnet, sonnet_idx = self._handle_sonnet(line_group, template_dict, sonnet_idx)
+                    data_dict = data_dict | sonnet
         
         return data_dict, seq_dict
 
-    def _handle_sonnet(self, line_group:etree._Element, template_dict: dict, sonnet_idx: int) -> dict:
+    def _handle_sonnet(self, line_group:etree._Element, template_dict: dict, sonnet_idx: int) -> tuple[dict, int]:
 
         line_tokens = self._get_sonnet_tokens(line_group)
 
@@ -549,19 +553,28 @@ class SonnetCorpus(EagerCorpus):
             **template_dict
         }
 
-        return {(template_dict['author'], sonnet_idx): sonnet_dict}
+        return {(template_dict['author'], sonnet_idx): sonnet_dict}, sonnet_idx + 1
 
     def _handle_sequence(self, line_group:etree._Element, template_dict: dict, sonnet_idx: int, sequence_idx: int) -> tuple[dict, dict, int, int]:
 
         new_sonnets = {}
         sequence_data = {}
 
+        lg_tag = self._prefix_tag("lg")
+
         for element in line_group:   # type: ignore
-            match element.tag:
+            match etree.QName(element).localname: # localname does not include namespace prefix
                 case "head":
-                    sequence_data["title"] = element.text
-                case "sonnet":
-                    new_sonnets = new_sonnets | self._handle_sonnet(element, template_dict, sonnet_idx)
+                    sequence_data["title"] = element.text.strip()
+                case "lg":
+                    match element.get("type"):
+                        case "subsequence":
+                            for child in element.iterchildren(lg_tag):
+                                sonnet, sonnet_idx = self._handle_sonnet(child, template_dict, sonnet_idx)
+                                new_sonnets = new_sonnets | sonnet
+                        case "sonnet":
+                            sonnet, sonnet_idx = self._handle_sonnet(element, template_dict, sonnet_idx)
+                            new_sonnets = new_sonnets | sonnet
 
         # Record all sonnets in sequence
         sequence_data["sonnets"] = list(new_sonnets)
@@ -569,30 +582,46 @@ class SonnetCorpus(EagerCorpus):
 
         new_sequence = {(template_dict["author"], sequence_idx): sequence_data}
 
-        return new_sonnets, new_sequence, sonnet_idx, sequence_idx
+        return new_sonnets, new_sequence, sonnet_idx, sequence_idx + 1
 
     def _get_sonnet_title(self, line_group:etree._Element) -> list:
-        return self.tokenizer(line_group[0].text) if line_group[0].tag == "head" else []
+        tag = self._prefix_tag("head")
+        return self.tokenizer(line_group[0].text) if line_group[0].tag == tag else []
     
     def _get_sonnet_metre(self, line_group:etree._Element) -> dict:
         metre = {}
+        tag = self._prefix_tag("l")
         
         if line_group.get("met"):  # type: ignore
             metre["sonnet"] = line_group.get("met")  # type: ignore
         
-        for idx, line in enumerate(line_group.iter("l")): # type: ignore
+        for idx, line in enumerate(line_group.iterchildren(tag)): # type: ignore
             if line.get("met"):
                 metre[idx] = line.get("met")
         
         return metre
     
-    def _get_sonnet_rhyme_scheme(self, line_group) -> str:
-        return line_group.get("rhyme") # type: ignore
+    def _get_sonnet_rhyme_scheme(self, line_group: etree._Element) -> str:
+        return line_group.get("rhyme")  # type: ignore
 
-    def _get_sonnet_tokens(self, line_group) -> list[list[str]]:
+    def _get_sonnet_tokens(self, line_group: etree._Element) -> list[list[str]]:
         """Returns tokenised representation of the sonnet, with each line's tokens in its
         own list."""
-        return [self.tokenizer(line.text) for line in line_group.iter("l")]
+        tag = self._prefix_tag("l")
+        tokens = []
+        for line in line_group.iter(tag):
+            line_tokens = [token.lower() for token in self.tokenizer(line.text)]
+            tokens.append(line_tokens)
+        return tokens
+    
+    def _prefix_tag(self, tag: str, prefix: str = "tei") -> str:
+        return f"{{{self._NS[prefix]}}}{tag}"
+
+    def __repr__(self) -> str:
+        sonnets = Counter([author for (author,_),_ in self.data.items()])
+        sequences = Counter([author for (author, _),_ in self.sequences.items()])
+        return f"SonnetCorpus({', '.join([f'{author}: {n} [{sequences[author]}]' for author,n in sonnets.items()])})"
+
 
 def ota_xml_to_txt(dir="."):
     """Helper function that converts OTA xml files into raw text. If you have
