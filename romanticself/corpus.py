@@ -597,6 +597,7 @@ class SonnetCorpus(EagerCorpus):
         
         for idx, line in enumerate(line_group.iterchildren(tag)): # type: ignore
             if line.get("met"):
+                # NB: Lines are zero-indexed, like all other arrays in the project
                 metre[idx] = line.get("met")
         
         return metre
