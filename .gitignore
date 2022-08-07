@@ -17,6 +17,9 @@ asylum.txt
 # copyright data is distributed through the sonnet corpus
 data/sonnet-corpus
 
+# old files from PhD used to generate clean csvs for person deixis analysis
+data/sonnet-deixis-from-phd
+
 # Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
