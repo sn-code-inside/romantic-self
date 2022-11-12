@@ -1,0 +1,26 @@
+,Author or Sonnet Type,Word,Scope,Frequency (per 1000 words)
+0,Clare,here,All Authors,0.7394135881466314
+1,Clare,there,All Authors,1.763217017888121
+2,Clare,this,All Authors,1.3650712396553195
+3,Clare,these,All Authors,0.7536330802263743
+4,Clare,those,All Authors,0.44080425447203025
+5,Smith,here,All Authors,1.5209896572703305
+6,Smith,there,All Authors,1.0139931048468869
+7,Smith,this,All Authors,2.2307848306631515
+8,Smith,these,All Authors,1.723788278239708
+9,Smith,those,All Authors,1.5209896572703305
+10,Wordsworth,here,All Authors,1.0419961669426716
+11,Wordsworth,there,All Authors,1.5443871760043166
+12,Wordsworth,this,All Authors,4.3726624862772825
+13,Wordsworth,these,All Authors,1.581601324823698
+14,Wordsworth,those,All Authors,1.2094598366298865
+40,couplet,here,Clare,0.38318580679771624
+41,non-couplet,here,Clare,0.9496032015193652
+42,couplet,there,Clare,1.8009732919492663
+43,non-couplet,there,Clare,1.7409392027855028
+44,couplet,this,Clare,0.5364601295168027
+45,non-couplet,this,Clare,1.8539872029663795
+46,couplet,these,Clare,0.306548645438173
+47,non-couplet,these,Clare,1.017432001627891
+48,couplet,those,Clare,0.22991148407862974
+49,non-couplet,those,Clare,0.5652400009043841
