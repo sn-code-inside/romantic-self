@@ -4,8 +4,9 @@ scratchpads/
 # Conceal script files (private user data)
 *.sh
 
-# JSTOR data cannot be distributed
+# Copyright data
 data/jstor-data
+data/drama-networks/raw
 
 # novel-corpus files with restrictive terms
 hermsprong.txt

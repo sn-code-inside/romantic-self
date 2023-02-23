@@ -1,0 +1,37 @@
+{
+    "dream": {
+        "title": "The Dream",
+        "author": "Joanna Baillie",
+        "date": 1812
+    },
+    "harpur": {
+        "title": "The Bushrangers",
+        "author": "Charles Harpur",
+        "date": 1853
+    },
+    "hemans": {
+        "title": "Vespers of Palermo",
+        "author": "Felicia Hemans",
+        "date": 1823
+    },
+    "iphigenie": {
+        "title": "Iphigénie",
+        "author": "Jean Racine",
+        "date": 1674
+    },
+    "orra": {
+        "title": "Orra",
+        "author": "Joanna Baillie",
+        "date": 1812
+    },
+    "macbeth": {
+        "title": "Macbeth",
+        "author": "William Shakespeare",
+        "date": 1606
+    },
+    "remorse": {
+        "title": "Remorse",
+        "author": "Samuel Taylor Coleridge",
+        "date": 1813
+    }
+}
