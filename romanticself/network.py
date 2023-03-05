@@ -82,7 +82,7 @@ def _stringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
     vec: VertexSeq|EdgeSeq = eval(f"graph.{which}") #ignore: eval-used
     for attr in vec.attributes():
         if isinstance(vec[attr][0], list):
-            vec[attr] = [val.__repr__() for val in vec[attr]]
+            vec[attr] = [repr(val) for val in vec[attr]]
     return graph
 
 def _unstringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
