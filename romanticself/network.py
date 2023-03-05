@@ -97,7 +97,7 @@ def _unstringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
             if all(isinstance(val, list) for val in eval_vec):
                 vec[attr] = eval_vec
         except SyntaxError:
-            pass
+            continue
     return graph
 
 
