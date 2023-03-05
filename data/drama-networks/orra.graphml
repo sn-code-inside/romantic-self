@@ -12,6 +12,7 @@
   <key id="v_name" for="node" attr.name="name" attr.type="string"/>
   <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
   <key id="v_word_count" for="node" attr.name="word_count" attr.type="double"/>
+  <key id="v_top_20_distinctive_words" for="node" attr.name="top_20_distinctive_words" attr.type="string"/>
   <key id="v_community" for="node" attr.name="community" attr.type="double"/>
   <key id="e_weight" for="edge" attr.name="weight" attr.type="double"/>
   <graph id="G" edgedefault="directed">
@@ -24,6 +25,7 @@
       <data key="v_name">Glottenbal</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">813</data>
+      <data key="v_top_20_distinctive_words">[&apos;sprig&apos;, &apos;play&apos;, &apos;terms&apos;, &apos;maiden&apos;, &apos;scratch&apos;, &apos;thinkst&apos;, &apos;foul&apos;, &apos;thrust&apos;, &apos;audacious&apos;, &apos;unless&apos;, &apos;accept&apos;, &apos;lose&apos;, &apos;it&apos;, &apos;i&apos;, &apos;and&apos;, &apos;rudigere&apos;, &apos;thou&apos;, &apos;me&apos;, &apos;show&apos;, &apos;offer&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n1">
@@ -31,6 +33,7 @@
       <data key="v_name">Rudigere</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">2544</data>
+      <data key="v_top_20_distinctive_words">[&apos;hour&apos;, &apos;price&apos;, &apos;rigid&apos;, &apos;agent&apos;, &apos;never&apos;, &apos;charge&apos;, &apos;blood&apos;, &apos;breast&apos;, &apos;veins&apos;, &apos;human&apos;, &apos;prove&apos;, &apos;firm&apos;, &apos;i&apos;, &apos;be&apos;, &apos;and&apos;, &apos;here&apos;, &apos;thee&apos;, &apos;long&apos;, &apos;obey&apos;, &apos;ho&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n2">
@@ -38,6 +41,7 @@
       <data key="v_name">Maurice</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">400</data>
+      <data key="v_top_20_distinctive_words">[&apos;brazen&apos;, &apos;drain&apos;, &apos;did&apos;, &apos;it&apos;, &apos;he&apos;, &apos;calls&apos;, &apos;pride&apos;, &apos;ay&apos;, &apos;i&apos;, &apos;lord&apos;, &apos;glottenbal&apos;, &apos;and&apos;, &apos;thou&apos;, &apos;but&apos;, &apos;my&apos;, &apos;him&apos;, &apos;thousand&apos;, &apos;social&apos;, &apos;varnish&apos;, &apos;denies&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n3">
@@ -45,6 +49,7 @@
       <data key="v_name">Theobald</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">1498</data>
+      <data key="v_top_20_distinctive_words">[&apos;captain&apos;, &apos;devoted&apos;, &apos;none&apos;, &apos;hartman&apos;, &apos;moves&apos;, &apos;ever&apos;, &apos;soldier&apos;, &apos;sight&apos;, &apos;serv&apos;, &apos;guarded&apos;, &apos;slightest&apos;, &apos;traces&apos;, &apos;crave&apos;, &apos;devotion&apos;, &apos;fair&apos;, &apos;friend&apos;, &apos;and&apos;, &apos;i&apos;, &apos;thee&apos;, &apos;the&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n4">
@@ -52,6 +57,7 @@
       <data key="v_name">Hartman</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">682</data>
+      <data key="v_top_20_distinctive_words">[&quot;gen&apos;rous&quot;, &apos;maid&apos;, &apos;died&apos;, &apos;fair&apos;, &apos;peace&apos;, &apos;and&apos;, &apos;thy&apos;, &apos;i&apos;, &apos;if&apos;, &apos;be&apos;, &apos;field&apos;, &apos;theobald&apos;, &apos;mind&apos;, &apos;come&apos;, &apos;it&apos;, &apos;that&apos;, &apos;she&apos;, &apos;her&apos;, &apos;not&apos;, &apos;the&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n5">
@@ -59,6 +65,7 @@
       <data key="v_name">Cathrina</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">1128</data>
+      <data key="v_top_20_distinctive_words">[&apos;hide&apos;, &apos;set&apos;, &apos;story&apos;, &apos;run&apos;, &apos;bed&apos;, &apos;eve&apos;, &apos;michael&apos;, &apos;since&apos;, &apos;clotted&apos;, &apos;ancestor&apos;, &apos;fetch&apos;, &apos;earth&apos;, &apos;past&apos;, &apos;night&apos;, &apos;pray&apos;, &apos;long&apos;, &apos;the&apos;, &apos;i&apos;, &apos;hour&apos;, &apos;sand&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n6">
@@ -66,6 +73,7 @@
       <data key="v_name">Hughobert</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">1574</data>
+      <data key="v_top_20_distinctive_words">[&apos;son&apos;, &apos;oh&apos;, &apos;surely&apos;, &apos;flatterers&apos;, &apos;ulric&apos;, &apos;parts&apos;, &apos;bereft&apos;, &apos;dolt&apos;, &apos;stubborn&apos;, &apos;blind&apos;, &apos;heir&apos;, &apos;chose&apos;, &apos;plighted&apos;, &apos;consequence&apos;, &apos;boy&apos;, &apos;god&apos;, &apos;aldenberg&apos;, &apos;hadst&apos;, &apos;he&apos;, &apos;thy&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n7">
@@ -73,6 +81,7 @@
       <data key="v_name">Urston</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">336</data>
+      <data key="v_top_20_distinctive_words">[&apos;daughter&apos;, &apos;forgiven&apos;, &apos;feign&apos;, &apos;therefore&apos;, &apos;thou&apos;, &apos;oft&apos;, &apos;gentle&apos;, &quot;e&apos;en&quot;, &apos;he&apos;, &apos;to&apos;, &apos;that&apos;, &apos;son&apos;, &apos;till&apos;, &apos;art&apos;, &apos;hardy&apos;, &apos;mayest&apos;, &apos;hinted&apos;, &apos;hopes&apos;, &apos;lookst&apos;, &apos;zeal&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n8">
@@ -80,6 +89,7 @@
       <data key="v_name">Eleanora</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">485</data>
+      <data key="v_top_20_distinctive_words">[&apos;alas&apos;, &apos;depress&apos;, &apos;goest&apos;, &apos;restored&apos;, &apos;kindly&apos;, &apos;entreat&apos;, &apos;nay&apos;, &apos;be&apos;, &apos;orra&apos;, &apos;us&apos;, &apos;is&apos;, &apos;soon&apos;, &apos;came&apos;, &apos;thou&apos;, &apos;thus&apos;, &apos;it&apos;, &apos;not&apos;, &apos;thy&apos;, &apos;her&apos;, &apos;to&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n9">
@@ -87,6 +97,7 @@
       <data key="v_name">Orra</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">4094</data>
+      <data key="v_top_20_distinctive_words">[&apos;sounds&apos;, &apos;awake&apos;, &apos;awful&apos;, &apos;dreadful&apos;, &apos;beneath&apos;, &apos;earth&apos;, &apos;darkness&apos;, &apos;intercourse&apos;, &apos;past&apos;, &apos;air&apos;, &apos;back&apos;, &apos;dark&apos;, &apos;horrible&apos;, &apos;living&apos;, &apos;forms&apos;, &apos;hold&apos;, &apos;being&apos;, &apos;power&apos;, &apos;half&apos;, &apos;strange&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n10">
@@ -94,6 +105,7 @@
       <data key="v_name">Servants</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">93</data>
+      <data key="v_top_20_distinctive_words">[&apos;the&apos;, &apos;leisure&apos;, &apos;trees&apos;, &apos;orders&apos;, &quot;clatt&apos;ring&quot;, &apos;followers&apos;, &apos;hundreds&apos;, &apos;steeds&apos;, &apos;bands&apos;, &apos;hounds&apos;, &apos;basle&apos;, &apos;shrill&apos;, &apos;strong&apos;, &apos;yell&apos;, &apos;rudolph&apos;, &apos;between&apos;, &apos;two&apos;, &apos;it&apos;, &apos;are&apos;, &apos;distant&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n11">
@@ -101,6 +113,7 @@
       <data key="v_name">Alice</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">303</data>
+      <data key="v_top_20_distinctive_words">[&apos;joy&apos;, &apos;cold&apos;, &apos;ever&apos;, &apos;and&apos;, &apos;pleasure&apos;, &apos;while&apos;, &apos;a&apos;, &apos;ramble&apos;, &apos;fanciful&apos;, &apos;softer&apos;, &apos;tidings&apos;, &apos;grandeur&apos;, &apos;follows&apos;, &apos;quicken&apos;, &apos;forbore&apos;, &apos;blithe&apos;, &apos;catch&apos;, &apos;subjection&apos;, &apos;subsiding&apos;, &apos;suspicious&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n12">
@@ -108,6 +121,7 @@
       <data key="v_name">Outlaws</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">343</data>
+      <data key="v_top_20_distinctive_words">[&apos;uprouse&apos;, &apos;nor&apos;, &quot;op&apos;ning&quot;, &apos;merry&apos;, &apos;ye&apos;, &apos;men&apos;, &apos;us&apos;, &apos;day&apos;, &apos;our&apos;, &apos;are&apos;, &apos;discover&apos;, &apos;and&apos;, &apos;the&apos;, &apos;their&apos;, &apos;close&apos;, &apos;own&apos;, &apos;way&apos;, &apos;roost&apos;, &apos;disperse&apos;, &apos;serving&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n13">
@@ -115,6 +129,7 @@
       <data key="v_name">Franko</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">884</data>
+      <data key="v_top_20_distinctive_words">[&apos;unhappy&apos;, &apos;unlock&apos;, &apos;leads&apos;, &apos;secret&apos;, &apos;stranger&apos;, &apos;the&apos;, &apos;sits&apos;, &apos;outlaws&apos;, &apos;deep&apos;, &apos;and&apos;, &apos;men&apos;, &apos;night&apos;, &apos;alone&apos;, &apos;two&apos;, &apos;steed&apos;, &apos;live&apos;, &apos;bear&apos;, &apos;talk&apos;, &apos;here&apos;, &apos;by&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n14">
@@ -122,6 +137,7 @@
       <data key="v_name">Attendants</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">124</data>
+      <data key="v_top_20_distinctive_words">[&apos;whether&apos;, &apos;stains&apos;, &apos;deepest&apos;, &apos;stiffen&apos;, &apos;limed&apos;, &apos;rack&apos;, &apos;suddenly&apos;, &apos;swell&apos;, &apos;poison&apos;, &apos;withpain&apos;, &apos;disappear&apos;, &apos;borne&apos;, &apos;unprepar&apos;, &apos;news&apos;, &apos;vault&apos;, &apos;retains&apos;, &apos;turret&apos;, &apos;untimely&apos;, &apos;dagger&apos;, &apos;cause&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n15">
@@ -129,6 +145,7 @@
       <data key="v_name">Vassals</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">158</data>
+      <data key="v_top_20_distinctive_words">[&apos;wicked&apos;, &apos;thou&apos;, &apos;fraud&apos;, &apos;enforce&apos;, &apos;prisoner&apos;, &apos;plots&apos;, &apos;tender&apos;, &apos;tempted&apos;, &apos;peril&apos;, &apos;account&apos;, &quot;thought&apos;st&quot;, &apos;good&apos;, &apos;to&apos;, &apos;the&apos;, &apos;discover&apos;, &apos;alarm&apos;, &apos;behold&apos;, &apos;creature&apos;, &apos;forthwith&apos;, &apos;arts&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n16">
@@ -136,6 +153,7 @@
       <data key="v_name">Soldiers</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">40</data>
+      <data key="v_top_20_distinctive_words">[&apos;outworks&apos;, &apos;ivy&apos;, &apos;wall&apos;, &quot;o&apos;ergrown&quot;, &apos;deep-tangled&apos;, &apos;thicket&apos;, &apos;wood&apos;, &apos;marks&apos;, &apos;voice&apos;, &apos;a&apos;, &apos;the&apos;, &apos;dismal&apos;, &apos;ruin&apos;, &apos;close&apos;, &apos;ancient&apos;, &apos;that&apos;, &apos;shriek&apos;, &apos;of&apos;, &apos;castle&apos;, &apos;lady&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <edge source="n0" target="n1">

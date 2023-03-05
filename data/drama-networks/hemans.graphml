@@ -12,6 +12,7 @@
   <key id="v_name" for="node" attr.name="name" attr.type="string"/>
   <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
   <key id="v_word_count" for="node" attr.name="word_count" attr.type="double"/>
+  <key id="v_top_20_distinctive_words" for="node" attr.name="top_20_distinctive_words" attr.type="string"/>
   <key id="v_community" for="node" attr.name="community" attr.type="double"/>
   <key id="e_weight" for="edge" attr.name="weight" attr.type="double"/>
   <graph id="G" edgedefault="directed">
@@ -24,6 +25,7 @@
       <data key="v_name">Peasants</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">615</data>
+      <data key="v_top_20_distinctive_words">[&apos;dance&apos;, &apos;days&apos;, &apos;song&apos;, &apos;snares&apos;, &apos;the&apos;, &apos;are&apos;, &apos;him&apos;, &apos;our&apos;, &apos;and&apos;, &apos;to&apos;, &apos;remember&apos;, &apos;stranger&apos;, &apos;wont&apos;, &apos;hearts&apos;, &apos;mark&apos;, &apos;vengeance&apos;, &apos;been&apos;, &apos;of&apos;, &apos;in&apos;, &apos;us&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n1">
@@ -31,6 +33,7 @@
       <data key="v_name">Procida</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">5418</data>
+      <data key="v_top_20_distinctive_words">[&apos;high&apos;, &apos;secret&apos;, &apos;son&apos;, &apos;shows&apos;, &apos;grasp&apos;, &apos;us.&apos;, &apos;nation&apos;, &apos;land&apos;, &apos;cheek&apos;, &apos;thy&apos;, &apos;montalba&apos;, &apos;burst&apos;, &apos;its&apos;, &apos;thus&apos;, &apos;soul&apos;, &apos;let&apos;, &apos;have&apos;, &apos;that&apos;, &apos;freedom&apos;, &apos;traitor&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n2">
@@ -38,6 +41,7 @@
       <data key="v_name">Vittoria</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">3054</data>
+      <data key="v_top_20_distinctive_words">[&apos;repose&apos;, &apos;loved&apos;, &apos;anselmo&apos;, &apos;me&apos;, &apos;soul&apos;, &apos;have&apos;, &apos;dead&apos;, &apos;thou&apos;, &apos;thy&apos;, &apos;wilt&apos;, &apos;darkness&apos;, &apos;sense&apos;, &apos;dull&apos;, &apos;to&apos;, &apos;with&apos;, &apos;that&apos;, &apos;high&apos;, &apos;the&apos;, &apos;and&apos;, &apos;of&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n3">
@@ -45,6 +49,7 @@
       <data key="v_name">Eribert</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">881</data>
+      <data key="v_top_20_distinctive_words">[&apos;your&apos;, &apos;slow&apos;, &apos;lady&apos;, &apos;triumph&apos;, &apos;command&apos;, &apos;to-day&apos;, &apos;have&apos;, &apos;to&apos;, &apos;that&apos;, &apos;thus&apos;, &apos;mock&apos;, &apos;girl&apos;, &apos;conquerors&apos;, &apos;chill&apos;, &apos;let&apos;, &apos;am&apos;, &apos;a&apos;, &apos;the&apos;, &apos;thy&apos;, &apos;and&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n4">
@@ -52,6 +57,7 @@
       <data key="v_name">Constance</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">2067</data>
+      <data key="v_top_20_distinctive_words">[&apos;brother&apos;, &apos;merciful&apos;, &apos;raimond&apos;, &apos;soul&apos;, &apos;trembling&apos;, &apos;heaven&apos;, &apos;love&apos;, &apos;not&apos;, &apos;thy&apos;, &apos;oh&apos;, &apos;to&apos;, &apos;look&apos;, &apos;thou&apos;, &apos;father&apos;, &apos;be&apos;, &apos;is&apos;, &apos;me&apos;, &apos;have&apos;, &apos;art&apos;, &apos;a&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n5">
@@ -59,6 +65,7 @@
       <data key="v_name">Raimond</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">4573</data>
+      <data key="v_top_20_distinctive_words">[&apos;constance&apos;, &apos;father&apos;, &apos;burns&apos;, &apos;lies&apos;, &apos;soul&apos;, &apos;rise&apos;, &apos;love&apos;, &apos;high&apos;, &apos;land&apos;, &apos;glorious&apos;, &apos;me&apos;, &apos;trumpet&apos;, &apos;twilight&apos;, &apos;earth.&apos;, &apos;remembrances&apos;, &apos;boyhood&apos;, &apos;wherein&apos;, &apos;a&apos;, &apos;have&apos;, &apos;my&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n6">
@@ -66,6 +73,7 @@
       <data key="v_name">Montalba</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">1959</data>
+      <data key="v_top_20_distinctive_words">[&apos;steed&apos;, &apos;foes&apos;, &apos;passionate&apos;, &apos;height&apos;, &apos;have&apos;, &apos;my&apos;, &apos;soul&apos;, &apos;were&apos;, &apos;the&apos;, &apos;doth&apos;, &apos;am&apos;, &apos;children&apos;, &apos;to&apos;, &apos;our&apos;, &apos;clinging&apos;, &apos;wife&apos;, &apos;plumed&apos;, &apos;dirge-like&apos;, &apos;paused&apos;, &apos;clasp&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n7">
@@ -73,6 +81,7 @@
       <data key="v_name">Sicilians</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">244</data>
+      <data key="v_top_20_distinctive_words">[&apos;outcast&apos;, &apos;vesper-bell&apos;, &apos;nigh&apos;, &apos;the&apos;, &apos;never&apos;, &apos;lost&apos;, &apos;revenge&apos;, &apos;conradin&apos;, &apos;none&apos;, &apos;fly&apos;, &apos;orphan&apos;, &apos;mountain-echoes.&apos;, &apos;nurtured&apos;, &apos;streaming&apos;, &quot;i&apos;th&apos;stranger&quot;, &apos;summer&apos;, &apos;gleam&apos;, &apos;ancestral&apos;, &apos;turret&apos;, &apos;hermit&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n8">
@@ -80,6 +89,7 @@
       <data key="v_name">Guido</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">461</data>
+      <data key="v_top_20_distinctive_words">[&apos;brother&apos;, &apos;knelt&apos;, &apos;name&apos;, &apos;me&apos;, &apos;art&apos;, &apos;raimond&apos;, &apos;the&apos;, &apos;of&apos;, &apos;follow&apos;, &apos;traitor&apos;, &apos;sought&apos;, &apos;thou&apos;, &apos;our&apos;, &apos;that&apos;, &apos;with&apos;, &apos;a&apos;, &apos;to&apos;, &apos;thee&apos;, &apos;him&apos;, &apos;cold&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n9">
@@ -87,6 +97,7 @@
       <data key="v_name">De Couci</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">133</data>
+      <data key="v_top_20_distinctive_words">[&apos;heaviness&apos;, &apos;comrades&apos;, &apos;horrors&apos;, &apos;unwarn&apos;, &apos;unguerdon&apos;, &apos;fate.&apos;, &apos;rejoin&apos;, &apos;unarm&apos;, &apos;true-boding&apos;, &apos;recklessly&apos;, &apos;doubtful&apos;, &apos;grovelling&apos;, &apos;soldiers&apos;, &quot;th&apos;approaching&quot;, &apos;dispersed&apos;, &apos;absence&apos;, &apos;elated&apos;, &apos;unprepared&apos;, &quot;said&apos;st&quot;, &apos;night&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n10">
@@ -94,6 +105,7 @@
       <data key="v_name">Alberti</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">184</data>
+      <data key="v_top_20_distinctive_words">[&apos;anjou&apos;, &apos;ere&apos;, &apos;to&apos;, &apos;bands&apos;, &apos;vengeance&apos;, &apos;though&apos;, &apos;declines&apos;, &apos;faithful&apos;, &apos;knows&apos;, &apos;saving&apos;, &apos;mayst&apos;, &apos;suspect&apos;, &quot;trait&apos;rous&quot;, &apos;projects&apos;, &apos;son&apos;, &apos;procida&apos;, &apos;and&apos;, &apos;thy&apos;, &apos;full&apos;, &apos;mine&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n11">
@@ -101,6 +113,7 @@
       <data key="v_name">Nobles</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">193</data>
+      <data key="v_top_20_distinctive_words">[&apos;her&apos;, &apos;she&apos;, &apos;what&apos;, &apos;the&apos;, &apos;sicilians&apos;, &apos;large&apos;, &apos;assembled&apos;, &apos;assume&apos;, &apos;mystery&apos;, &apos;boast&apos;, &apos;unnatural&apos;, &apos;brook&apos;, &apos;perceives&apos;, &apos;worshipp&apos;, &apos;hardly&apos;, &apos;castle&apos;, &apos;guerdon&apos;, &apos;glances&apos;, &quot;th&apos;elate&quot;, &apos;streets&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n12">
@@ -108,6 +121,7 @@
       <data key="v_name">Messenger</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">25</data>
+      <data key="v_top_20_distinctive_words">[&apos;demands&apos;, &apos;lord&apos;, &apos;fraught&apos;, &apos;bade&apos;, &apos;pardon&apos;, &apos;tidings&apos;, &apos;de&apos;, &apos;this&apos;, &apos;and&apos;, &apos;bear&apos;, &apos;couci&apos;, &apos;good&apos;, &apos;life&apos;, &apos;say&apos;, &apos;death&apos;, &apos;me&apos;, &apos;with&apos;, &apos;my&apos;, &apos;but&apos;, &apos;is&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n13">
@@ -115,6 +129,7 @@
       <data key="v_name">Soldiers</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">14</data>
+      <data key="v_top_20_distinctive_words">[&apos;montjoy&apos;, &apos;anjou&apos;, &apos;denis&apos;, &apos;st.&apos;, &apos;provençals&apos;, &apos;rescue&apos;, &apos;couci&apos;, &apos;on&apos;, &apos;for&apos;, &apos;to&apos;, &apos;the&apos;, &apos;frenzy&apos;, &apos;fury&apos;, &apos;furrows&apos;, &apos;furrow&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;friend&apos;, &apos;fulfill&apos;, &apos;freshness.&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n14">
@@ -122,6 +137,7 @@
       <data key="v_name">Anselmo</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">852</data>
+      <data key="v_top_20_distinctive_words">[&apos;lend&apos;, &apos;help&apos;, &apos;hang&apos;, &apos;daughter&apos;, &apos;thy&apos;, &apos;doth&apos;, &apos;her&apos;, &apos;thou&apos;, &apos;alas&apos;, &apos;wouldst&apos;, &apos;wrought&apos;, &apos;hallow&apos;, &apos;the&apos;, &apos;mercy&apos;, &apos;and&apos;, &apos;not&apos;, &apos;ye&apos;, &apos;gone&apos;, &apos;of&apos;, &apos;thine&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n15">
@@ -129,6 +145,7 @@
       <data key="v_name">Citizens</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">211</data>
+      <data key="v_top_20_distinctive_words">[&apos;the&apos;, &apos;come&apos;, &apos;of&apos;, &apos;breeze&apos;, &apos;and&apos;, &apos;savage&apos;, &apos;groan&apos;, &apos;prophecy.&apos;, &apos;gate&apos;, &apos;reckoners&apos;, &apos;wilder&apos;, &quot;i&apos;th&apos;air&quot;, &apos;illusion&apos;, &apos;account&apos;, &apos;duly&apos;, &apos;infants&apos;, &apos;cry&apos;, &apos;with.&apos;, &apos;wail&apos;, &apos;wailings&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n16">
@@ -136,6 +153,7 @@
       <data key="v_name">Attendants</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">67</data>
+      <data key="v_top_20_distinctive_words">[&apos;aid&apos;, &apos;bank&apos;, &apos;high-born&apos;, &apos;gentler&apos;, &apos;lay&apos;, &apos;devote&apos;, &apos;retreats&apos;, &apos;obey&apos;, &apos;to&apos;, &apos;them&apos;, &apos;green&apos;, &apos;peasant&apos;, &apos;care&apos;, &apos;tend&apos;, &quot;may&apos;st&quot;, &apos;suffer&apos;, &apos;thou&apos;, &apos;hands&apos;, &apos;sunny&apos;, &apos;vows&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n17">
@@ -143,6 +161,7 @@
       <data key="v_name">Nun</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">0</data>
+      <data key="v_top_20_distinctive_words">[&apos;youthful&apos;, &apos;fugitive&apos;, &apos;future&apos;, &apos;fury&apos;, &apos;furrows&apos;, &apos;furrow&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fulfill&apos;, &apos;fulfil&apos;, &apos;fugitives&apos;, &apos;fruitless&apos;, &apos;gales&apos;, &apos;from.&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;friend&apos;, &apos;freshness.&apos;, &apos;frenzy&apos;, &apos;freeze&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <edge source="n0" target="n0">

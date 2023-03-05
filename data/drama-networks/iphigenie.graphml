@@ -12,6 +12,7 @@
   <key id="v_name" for="node" attr.name="name" attr.type="string"/>
   <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
   <key id="v_word_count" for="node" attr.name="word_count" attr.type="double"/>
+  <key id="v_top_20_distinctive_words" for="node" attr.name="top_20_distinctive_words" attr.type="string"/>
   <key id="v_community" for="node" attr.name="community" attr.type="double"/>
   <key id="e_weight" for="edge" attr.name="weight" attr.type="double"/>
   <graph id="G" edgedefault="directed">
@@ -24,6 +25,7 @@
       <data key="v_name">Agamemnon</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">3165</data>
+      <data key="v_top_20_distinctive_words">[&apos;mes&apos;, &apos;tu&apos;, &apos;ta&apos;, &apos;je&apos;, &apos;de&apos;, &apos;mon&apos;, &apos;ma&apos;, &apos;veux&apos;, &apos;l&apos;, &apos;et&apos;, &apos;vous&apos;, &apos;t&apos;, &apos;puissance&apos;, &apos;ulysse&apos;, &apos;rends&apos;, &apos;cruels&apos;, &apos;la&apos;, &apos;arcas&apos;, &apos;fille&apos;, &apos;que&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n1">
@@ -31,6 +33,7 @@
       <data key="v_name">Arcas</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">633</data>
+      <data key="v_top_20_distinctive_words">[&apos;de&apos;, &apos;l&apos;, &apos;vents&apos;, &apos;vous&apos;, &apos;le&apos;, &apos;amante&apos;, &apos;et&apos;, &apos;a&apos;, &apos;seigneur&apos;, &apos;la&apos;, &apos;pour&apos;, &apos;il&apos;, &apos;vos&apos;, &apos;je&apos;, &apos;les&apos;, &apos;honneurs&apos;, &apos;toute&apos;, &apos;roi&apos;, &apos;ce&apos;, &apos;est&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n2">
@@ -38,6 +41,7 @@
       <data key="v_name">Achille</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">2701</data>
+      <data key="v_top_20_distinctive_words">[&apos;de&apos;, &apos;je&apos;, &apos;mon&apos;, &apos;mes&apos;, &apos;vous&apos;, &apos;venger&apos;, &apos;moi&apos;, &apos;et&apos;, &apos;m&apos;, &apos;que&apos;, &apos;a&apos;, &apos;un&apos;, &apos;d&apos;, &apos;cours&apos;, &apos;l&apos;, &apos;ma&apos;, &apos;le&apos;, &apos;ne&apos;, &apos;votre&apos;, &apos;la&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n3">
@@ -45,6 +49,7 @@
       <data key="v_name">Ulysse</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">1250</data>
+      <data key="v_top_20_distinctive_words">[&apos;de&apos;, &apos;et&apos;, &apos;l&apos;, &apos;la&apos;, &apos;air&apos;, &apos;a&apos;, &apos;flammes&apos;, &apos;elle-meme&apos;, &apos;haute&apos;, &apos;vous&apos;, &apos;ses&apos;, &apos;sang&apos;, &apos;grece&apos;, &apos;d&apos;, &apos;le&apos;, &apos;nos&apos;, &apos;que&apos;, &apos;les&apos;, &apos;du&apos;, &apos;elle&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n4">
@@ -52,6 +57,7 @@
       <data key="v_name">Eurybate</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">276</data>
+      <data key="v_top_20_distinctive_words">[&apos;seignueur&apos;, &apos;de&apos;, &apos;ennemis&apos;, &apos;amene&apos;, &apos;d&apos;, &apos;a&apos;, &apos;que&apos;, &apos;la&apos;, &apos;qui&apos;, &apos;roi&apos;, &apos;reine&apos;, &apos;les&apos;, &apos;et&apos;, &apos;le&apos;, &apos;elle&apos;, &apos;l&apos;, &apos;nous&apos;, &apos;plus&apos;, &apos;obscurite&apos;, &apos;retrouve&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n5">
@@ -59,6 +65,7 @@
       <data key="v_name">Eriphile</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">1807</data>
+      <data key="v_top_20_distinctive_words">[&apos;doris&apos;, &apos;eux&apos;, &apos;je&apos;, &apos;mes&apos;, &apos;expirer&apos;, &apos;de&apos;, &apos;et&apos;, &apos;des&apos;, &apos;tu&apos;, &apos;mon&apos;, &apos;m&apos;, &apos;a&apos;, &apos;la&apos;, &apos;un&apos;, &apos;doivent&apos;, &apos;inconnue&apos;, &apos;d&apos;, &apos;me&apos;, &apos;ma&apos;, &apos;te&apos;]</data>
       <data key="v_community">2</data>
     </node>
     <node id="n6">
@@ -66,6 +73,7 @@
       <data key="v_name">Doris</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">432</data>
+      <data key="v_top_20_distinctive_words">[&apos;dites-vous&apos;, &apos;perdant&apos;, &apos;vous&apos;, &apos;que&apos;, &apos;de&apos;, &apos;et&apos;, &apos;un&apos;, &apos;des&apos;, &apos;le&apos;, &apos;fut&apos;, &apos;vainqueur&apos;, &apos;devez&apos;, &apos;l&apos;, &apos;avec&apos;, &apos;toujours&apos;, &apos;tout&apos;, &apos;elle&apos;, &apos;moins&apos;, &apos;madame&apos;, &apos;est&apos;]</data>
       <data key="v_community">2</data>
     </node>
     <node id="n7">
@@ -73,6 +81,7 @@
       <data key="v_name">Iphigenie</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">2936</data>
+      <data key="v_top_20_distinctive_words">[&apos;mon&apos;, &apos;aimez&apos;, &apos;de&apos;, &apos;je&apos;, &apos;m&apos;, &apos;mes&apos;, &apos;vous&apos;, &apos;amant&apos;, &apos;bonte&apos;, &apos;rigueur&apos;, &apos;helas&apos;, &apos;a&apos;, &apos;que&apos;, &apos;la&apos;, &apos;alarmes&apos;, &apos;transports&apos;, &apos;etat&apos;, &apos;malheureux&apos;, &apos;d&apos;, &apos;un&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n8">
@@ -80,6 +89,7 @@
       <data key="v_name">Clytemnestre</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">2002</data>
+      <data key="v_top_20_distinctive_words">[&apos;de&apos;, &apos;payer&apos;, &apos;etonne&apos;, &apos;je&apos;, &apos;ma&apos;, &apos;l&apos;, &apos;m&apos;, &apos;et&apos;, &apos;vous&apos;, &apos;mon&apos;, &apos;fille&apos;, &apos;a&apos;, &apos;la&apos;, &apos;toi&apos;, &apos;trahison&apos;, &apos;un&apos;, &apos;il&apos;, &apos;pourquoi&apos;, &apos;arcas&apos;, &apos;cruel&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n9">
@@ -87,6 +97,7 @@
       <data key="v_name">Aegine</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">55</data>
+      <data key="v_top_20_distinctive_words">[&apos;savez-vous&apos;, &apos;trahie&apos;, &apos;serpent&apos;, &apos;madame&apos;, &apos;conduite&apos;, &apos;passe&apos;, &apos;revele&apos;, &apos;retire&apos;, &apos;courez-vous&apos;, &apos;a&apos;, &apos;inhumain&apos;, &apos;voulez-vous&apos;, &apos;ah&apos;, &apos;crime&apos;, &apos;sein&apos;, &apos;et&apos;, &apos;qui&apos;, &apos;fuite&apos;, &apos;vous-meme&apos;, &apos;eriphile&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n10">
@@ -94,6 +105,7 @@
       <data key="v_name">Gardes</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
+      <data key="v_top_20_distinctive_words">[&apos;zele&apos;, &apos;entreprenne&apos;, &apos;envie&apos;, &apos;envi&apos;, &apos;envelopper&apos;, &apos;entrons&apos;, &apos;entrevois&apos;, &apos;entretien&apos;, &apos;entretenir&apos;, &apos;entreprise&apos;, &apos;entree&apos;, &apos;faisais-je&apos;, &apos;entre&apos;, &apos;entrai&apos;, &apos;entr&apos;, &apos;entiere&apos;, &apos;entier&apos;, &apos;entendu&apos;, &apos;entends-je&apos;, &apos;entends&apos;]</data>
       <data key="v_community">3</data>
     </node>
     <edge source="n0" target="n1">

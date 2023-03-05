@@ -12,6 +12,7 @@
   <key id="v_name" for="node" attr.name="name" attr.type="string"/>
   <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
   <key id="v_word_count" for="node" attr.name="word_count" attr.type="double"/>
+  <key id="v_top_20_distinctive_words" for="node" attr.name="top_20_distinctive_words" attr.type="string"/>
   <key id="v_community" for="node" attr.name="community" attr.type="double"/>
   <key id="e_weight" for="edge" attr.name="weight" attr.type="double"/>
   <graph id="G" edgedefault="directed">
@@ -24,6 +25,7 @@
       <data key="v_name">Zulimez</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">306</data>
+      <data key="v_top_20_distinctive_words">[&apos;you&apos;, &apos;mariners&apos;, &apos;shaped&apos;, &apos;to&apos;, &apos;the&apos;, &apos;a&apos;, &apos;of&apos;, &apos;oath&apos;, &apos;yours&apos;, &apos;grows&apos;, &apos;it&apos;, &apos;that&apos;, &apos;is&apos;, &apos;in&apos;, &apos;and&apos;, &apos;gentle&apos;, &apos;all&apos;, &apos;murderer&apos;, &apos;alvar&apos;, &apos;your&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n1">
@@ -31,6 +33,7 @@
       <data key="v_name">Don Alvar</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">3644</data>
+      <data key="v_top_20_distinctive_words">[&apos;i&apos;, &apos;conscience&apos;, &apos;of&apos;, &apos;to&apos;, &apos;and&apos;, &apos;the&apos;, &apos;my&apos;, &apos;she&apos;, &apos;guilty&apos;, &apos;teresa&apos;, &apos;me&apos;, &apos;that&apos;, &apos;thy&apos;, &apos;a&apos;, &apos;ye&apos;, &apos;from&apos;, &apos;thou&apos;, &apos;with&apos;, &apos;him&apos;, &apos;thee&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n2">
@@ -38,6 +41,7 @@
       <data key="v_name">Dona Teresa</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">2405</data>
+      <data key="v_top_20_distinctive_words">[&apos;i&apos;, &apos;to&apos;, &apos;my&apos;, &apos;me&apos;, &apos;alvar&apos;, &apos;of&apos;, &apos;feel&apos;, &apos;the&apos;, &apos;and&apos;, &apos;that&apos;, &apos;him&apos;, &apos;hush&apos;, &apos;if&apos;, &apos;it&apos;, &apos;a&apos;, &apos;love&apos;, &apos;you&apos;, &apos;o&apos;, &apos;his&apos;, &apos;oft&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n3">
@@ -45,6 +49,7 @@
       <data key="v_name">Marquis Valdez</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">1299</data>
+      <data key="v_top_20_distinctive_words">[&apos;to&apos;, &apos;him&apos;, &apos;of&apos;, &apos;i&apos;, &apos;my&apos;, &apos;the&apos;, &apos;fate&apos;, &apos;and&apos;, &apos;he&apos;, &apos;his&apos;, &apos;old&apos;, &apos;that&apos;, &apos;alvar&apos;, &apos;a&apos;, &apos;with&apos;, &apos;it&apos;, &apos;you&apos;, &apos;bless&apos;, &quot;ne&apos;er&quot;, &apos;teresa&apos;]</data>
       <data key="v_community">1</data>
     </node>
     <node id="n4">
@@ -52,6 +57,7 @@
       <data key="v_name">Monviedro</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">352</data>
+      <data key="v_top_20_distinctive_words">[&apos;the&apos;, &apos;my&apos;, &apos;lord&apos;, &apos;grieve&apos;, &apos;of&apos;, &apos;to&apos;, &apos;your&apos;, &apos;you&apos;, &apos;holy&apos;, &apos;prove&apos;, &apos;he&apos;, &apos;that&apos;, &apos;i&apos;, &apos;this&apos;, &apos;have&apos;, &apos;and&apos;, &apos;trust&apos;, &apos;false&apos;, &apos;moresco&apos;, &apos;inquisition&apos;]</data>
       <data key="v_community">2</data>
     </node>
     <node id="n5">
@@ -59,6 +65,7 @@
       <data key="v_name">Don Ordonio</data>
       <data key="v_gender"> m</data>
       <data key="v_word_count">3200</data>
+      <data key="v_top_20_distinctive_words">[&apos;i&apos;, &apos;me&apos;, &apos;of&apos;, &apos;a&apos;, &apos;to&apos;, &apos;the&apos;, &apos;it&apos;, &apos;fool&apos;, &apos;you&apos;, &apos;him&apos;, &apos;and&apos;, &apos;that&apos;, &apos;thou&apos;, &apos;blood&apos;, &apos;this&apos;, &apos;he&apos;, &apos;she&apos;, &apos;my&apos;, &apos;come&apos;, &apos;done&apos;]</data>
       <data key="v_community">2</data>
     </node>
     <node id="n6">
@@ -66,6 +73,7 @@
       <data key="v_name">Alhadra</data>
       <data key="v_gender">f</data>
       <data key="v_word_count">1522</data>
+      <data key="v_top_20_distinctive_words">[&apos;i&apos;, &apos;of&apos;, &apos;my&apos;, &apos;the&apos;, &apos;and&apos;, &apos;blood&apos;, &apos;that&apos;, &apos;a&apos;, &apos;he&apos;, &apos;to&apos;, &apos;was&apos;, &apos;children&apos;, &apos;chieftain&apos;, &apos;you&apos;, &apos;lady&apos;, &apos;him&apos;, &apos;had&apos;, &apos;it&apos;, &apos;in&apos;, &apos;me&apos;]</data>
       <data key="v_community">3</data>
     </node>
     <node id="n7">
@@ -73,6 +81,7 @@
       <data key="v_name">Isidore</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">1948</data>
+      <data key="v_top_20_distinctive_words">[&apos;i&apos;, &apos;my&apos;, &apos;you&apos;, &apos;a&apos;, &apos;that&apos;, &apos;to&apos;, &apos;lord&apos;, &apos;the&apos;, &apos;he&apos;, &apos;me&apos;, &apos;of&apos;, &apos;and&apos;, &apos;it&apos;, &apos;in&apos;, &apos;mock&apos;, &apos;stones&apos;, &apos;was&apos;, &apos;gratitude&apos;, &apos;near&apos;, &apos;had&apos;]</data>
       <data key="v_community">2</data>
     </node>
     <node id="n8">
@@ -80,6 +89,7 @@
       <data key="v_name">Voices</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">78</data>
+      <data key="v_top_20_distinctive_words">[&apos;compel&apos;, &apos;miserere&apos;, &apos;domine&apos;, &apos;lest&apos;, &apos;the&apos;, &apos;blacker&apos;, &apos;charm&apos;, &apos;spell&apos;, &apos;hear&apos;, &apos;a&apos;, &apos;knell&apos;, &apos;faintly&apos;, &apos;swell&apos;, &apos;doleful&apos;, &apos;boatmen&apos;, &apos;demons&apos;, &apos;yellow&apos;, &apos;shore&apos;, &apos;tapers&apos;, &apos;oars&apos;]</data>
       <data key="v_community">4</data>
     </node>
     <node id="n9">
@@ -87,6 +97,7 @@
       <data key="v_name">Attendants</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
+      <data key="v_top_20_distinctive_words">[&apos;zulimez&apos;, &apos;frightful&apos;, &apos;funeral&apos;, &apos;fumes&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fruits&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;frost&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;genial&apos;, &apos;friendless&apos;, &apos;friend.&apos;, &apos;friend&apos;, &apos;fretted&apos;, &apos;fret&apos;, &apos;fresh&apos;, &apos;frequent&apos;]</data>
       <data key="v_community">5</data>
     </node>
     <node id="n10">
@@ -94,6 +105,7 @@
       <data key="v_name">Familiars of the Inquisition</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
+      <data key="v_top_20_distinctive_words">[&apos;zulimez&apos;, &apos;frightful&apos;, &apos;funeral&apos;, &apos;fumes&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fruits&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;frost&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;genial&apos;, &apos;friendless&apos;, &apos;friend.&apos;, &apos;friend&apos;, &apos;fretted&apos;, &apos;fret&apos;, &apos;fresh&apos;, &apos;frequent&apos;]</data>
       <data key="v_community">6</data>
     </node>
     <node id="n11">
@@ -101,6 +113,7 @@
       <data key="v_name">Servants</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
+      <data key="v_top_20_distinctive_words">[&apos;zulimez&apos;, &apos;frightful&apos;, &apos;funeral&apos;, &apos;fumes&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fruits&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;frost&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;genial&apos;, &apos;friendless&apos;, &apos;friend.&apos;, &apos;friend&apos;, &apos;fretted&apos;, &apos;fret&apos;, &apos;fresh&apos;, &apos;frequent&apos;]</data>
       <data key="v_community">0</data>
     </node>
     <node id="n12">
@@ -108,6 +121,7 @@
       <data key="v_name">Naomi</data>
       <data key="v_gender">m</data>
       <data key="v_word_count">47</data>
+      <data key="v_top_20_distinctive_words">[&apos;alla&apos;, &apos;obeyed&apos;, &apos;enjoin&apos;, &apos;chief&apos;, &apos;prophet&apos;, &apos;dies&apos;, &apos;garments&apos;, &apos;where&apos;, &apos;is&apos;, &apos;away&apos;, &apos;haste&apos;, &apos;comfort&apos;, &apos;perished&apos;, &apos;bless&apos;, &apos;onward&apos;, &apos;and&apos;, &apos;the&apos;, &apos;cavern&apos;, &apos;didst&apos;, &apos;murdered&apos;]</data>
       <data key="v_community">3</data>
     </node>
     <node id="n13">
@@ -115,6 +129,7 @@
       <data key="v_name">Moors</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">10</data>
+      <data key="v_top_20_distinctive_words">[&apos;away&apos;, &apos;perished&apos;, &apos;alla&apos;, &apos;say&apos;, &apos;she&apos;, &apos;murder&apos;, &apos;did&apos;, &apos;his&apos;, &apos;by&apos;, &apos;fruits&apos;, &apos;from&apos;, &apos;full&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;fulness&apos;, &apos;frost&apos;, &apos;zulimez&apos;, &apos;friendless&apos;, &apos;frightful&apos;, &apos;friends&apos;]</data>
       <data key="v_community">3</data>
     </node>
     <node id="n14">
@@ -122,6 +137,7 @@
       <data key="v_name">Peasants</data>
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
+      <data key="v_top_20_distinctive_words">[&apos;zulimez&apos;, &apos;frightful&apos;, &apos;funeral&apos;, &apos;fumes&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fruits&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;frost&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;genial&apos;, &apos;friendless&apos;, &apos;friend.&apos;, &apos;friend&apos;, &apos;fretted&apos;, &apos;fret&apos;, &apos;fresh&apos;, &apos;frequent&apos;]</data>
       <data key="v_community">7</data>
     </node>
     <edge source="n0" target="n1">

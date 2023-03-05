@@ -8,6 +8,7 @@ import json
 import csv
 import textwrap
 import igraph as ig
+from igraph import VertexSeq, EdgeSeq
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
@@ -64,13 +65,47 @@ def _import_from_raw(data_dir: str, manifest: dict, cache_corpus: bool = True) -
 def _save_corpus_as_graphml(data_dir: str, corpus: GraphCorpus) -> None:
     for graph in corpus.values():
         _graph = graph.copy()
-        del _graph.es["tokens"]  # cannot be published to github
-        del _graph.vs["tokens"]  # likewise
+        # These two lines delete unpublishable data: the dialogue for each
+        # character and edge. In fact, because these data are stored as lists,
+        # they are not compatible with graphml anyway and would not be saved.
+        del _graph.es["tokens"]
+        del _graph.vs["tokens"]
+        # It is important, however, to save the `top_n_words`, which are
+        # also in list format. So these attributes will need to be converted
+        # to strings
+        _graph = _stringify_list_attrs(_graph, "es")
+        _graph = _stringify_list_attrs(_graph, "vs")
         _graph.write_graphml(_get_gml_filename(data_dir, graph["play"]))
+
+def _stringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
+    assert(which == "vs" or which == "es")
+    vec: VertexSeq|EdgeSeq = eval(f"graph.{which}") #ignore: eval-used
+    for attr in vec.attributes():
+        if isinstance(vec[attr][0], list):
+            vec[attr] = [val.__repr__() for val in vec[attr]]
+    return graph
+
+def _unstringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
+    # This will convert any attribute that looks like a Python list into
+    # one. That's 0-risk for this particular project! But beware if you
+    # ever reuse this code...
+    assert(which == "vs" or which == "str")
+    vec: VertexSeq|EdgeSeq = eval(f"graph.{which}") #ignore: eval-used
+    for attr in vec.attributes():
+        try:
+            eval_vec = [eval(val) for val in vec[attr]] #ignore: eval-used
+            if all(isinstance(val, list) for val in eval_vec):
+                vec[attr] = eval_vec
+        except SyntaxError:
+            pass
+    return graph
 
 
 def _import_from_cache(data_dir: str, manifest: dict) -> GraphCorpus:
-    return {play: ig.Graph.Read_GraphML(_get_gml_filename(data_dir, play)) for play in manifest}
+    corpus = {play: ig.Graph.Read_GraphML(_get_gml_filename(data_dir, play)) for play in manifest}
+    corpus = {play: _unstringify_list_attrs(graph, "vs") for play,graph in corpus.items()}
+    corpus = {play: _unstringify_list_attrs(graph, "es") for play,graph in corpus.items()}
+    return corpus
 
 
 def _get_gml_filename(data_dir: str, play: str) -> str:
@@ -148,11 +183,11 @@ def _get_distinctive_words(documents: Iterable[Iterable[str]], n: int = 20) -> l
     at each term, and calculates what proportion of all instances of the term occurs
     in that one text. E.g. if there are 1000 instances of "the" in the play, and
     one character says "the" 100 times, their term frequency for "the" would
-    be calculated as 100/1000 = 0.1.
+    be calculated as 100/1000 = 0.1. They say 10% of the "the"s.
     
     This is not the method that nltk offers to normalise term frequencies for
     tf-idf. It offers an alternative normalisation strategy, "sublinear
-    term frequency". In this strategy, the tf-idf is calculate on the log
+    term frequency". In this strategy, the tf-idf is calculated on the log
     of the term frequency. Thus the character who uses "the" 100 times would
     have a score for this word of log_2(100) + 1 = 7.64.
 
