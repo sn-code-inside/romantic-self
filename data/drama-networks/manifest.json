@@ -4,6 +4,11 @@
         "author": "Joanna Baillie",
         "date": 1812
     },
+    "orra": {
+        "title": "Orra",
+        "author": "Joanna Baillie",
+        "date": 1812
+    },
     "harpur": {
         "title": "The Bushrangers",
         "author": "Charles Harpur",
@@ -14,24 +19,19 @@
         "author": "Felicia Hemans",
         "date": 1823
     },
+    "remorse": {
+        "title": "Remorse",
+        "author": "Samuel Taylor Coleridge",
+        "date": 1813
+    },
     "iphigenie": {
         "title": "Iphigénie",
         "author": "Jean Racine",
         "date": 1674
     },
-    "orra": {
-        "title": "Orra",
-        "author": "Joanna Baillie",
-        "date": 1812
-    },
     "macbeth": {
         "title": "Macbeth",
         "author": "William Shakespeare",
         "date": 1606
-    },
-    "remorse": {
-        "title": "Remorse",
-        "author": "Samuel Taylor Coleridge",
-        "date": 1813
     }
 }
