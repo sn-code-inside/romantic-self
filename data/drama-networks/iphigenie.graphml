@@ -8,6 +8,7 @@
   <key id="g_title" for="graph" attr.name="title" attr.type="string"/>
   <key id="g_author" for="graph" attr.name="author" attr.type="string"/>
   <key id="g_date" for="graph" attr.name="date" attr.type="double"/>
+  <key id="g_modularity" for="graph" attr.name="modularity" attr.type="double"/>
   <key id="v_code" for="node" attr.name="code" attr.type="string"/>
   <key id="v_name" for="node" attr.name="name" attr.type="string"/>
   <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
@@ -20,6 +21,7 @@
     <data key="g_title">Iphigénie</data>
     <data key="g_author">Jean Racine</data>
     <data key="g_date">1674</data>
+    <data key="g_modularity">0.298325033952015</data>
     <node id="n0">
       <data key="v_code">aga</data>
       <data key="v_name">Agamemnon</data>
@@ -42,7 +44,7 @@
       <data key="v_gender">m</data>
       <data key="v_word_count">2701</data>
       <data key="v_top_20_distinctive_words">[&apos;de&apos;, &apos;je&apos;, &apos;mon&apos;, &apos;mes&apos;, &apos;vous&apos;, &apos;venger&apos;, &apos;moi&apos;, &apos;et&apos;, &apos;m&apos;, &apos;que&apos;, &apos;a&apos;, &apos;un&apos;, &apos;d&apos;, &apos;cours&apos;, &apos;l&apos;, &apos;ma&apos;, &apos;le&apos;, &apos;ne&apos;, &apos;votre&apos;, &apos;la&apos;]</data>
-      <data key="v_community">1</data>
+      <data key="v_community">0</data>
     </node>
     <node id="n3">
       <data key="v_code">uly</data>
@@ -58,7 +60,7 @@
       <data key="v_gender">m</data>
       <data key="v_word_count">276</data>
       <data key="v_top_20_distinctive_words">[&apos;seignueur&apos;, &apos;de&apos;, &apos;ennemis&apos;, &apos;amene&apos;, &apos;d&apos;, &apos;a&apos;, &apos;que&apos;, &apos;la&apos;, &apos;qui&apos;, &apos;roi&apos;, &apos;reine&apos;, &apos;les&apos;, &apos;et&apos;, &apos;le&apos;, &apos;elle&apos;, &apos;l&apos;, &apos;nous&apos;, &apos;plus&apos;, &apos;obscurite&apos;, &apos;retrouve&apos;]</data>
-      <data key="v_community">0</data>
+      <data key="v_community">1</data>
     </node>
     <node id="n5">
       <data key="v_code">eri</data>
@@ -90,7 +92,7 @@
       <data key="v_gender">f</data>
       <data key="v_word_count">2002</data>
       <data key="v_top_20_distinctive_words">[&apos;de&apos;, &apos;payer&apos;, &apos;etonne&apos;, &apos;je&apos;, &apos;ma&apos;, &apos;l&apos;, &apos;m&apos;, &apos;et&apos;, &apos;vous&apos;, &apos;mon&apos;, &apos;fille&apos;, &apos;a&apos;, &apos;la&apos;, &apos;toi&apos;, &apos;trahison&apos;, &apos;un&apos;, &apos;il&apos;, &apos;pourquoi&apos;, &apos;arcas&apos;, &apos;cruel&apos;]</data>
-      <data key="v_community">0</data>
+      <data key="v_community">1</data>
     </node>
     <node id="n9">
       <data key="v_code">aeg</data>
@@ -106,7 +108,7 @@
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
       <data key="v_top_20_distinctive_words">[&apos;zele&apos;, &apos;entreprenne&apos;, &apos;envie&apos;, &apos;envi&apos;, &apos;envelopper&apos;, &apos;entrons&apos;, &apos;entrevois&apos;, &apos;entretien&apos;, &apos;entretenir&apos;, &apos;entreprise&apos;, &apos;entree&apos;, &apos;faisais-je&apos;, &apos;entre&apos;, &apos;entrai&apos;, &apos;entr&apos;, &apos;entiere&apos;, &apos;entier&apos;, &apos;entendu&apos;, &apos;entends-je&apos;, &apos;entends&apos;]</data>
-      <data key="v_community">3</data>
+      <data key="v_community">0</data>
     </node>
     <edge source="n0" target="n1">
       <data key="e_weight">1007</data>

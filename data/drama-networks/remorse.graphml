@@ -8,6 +8,7 @@
   <key id="g_title" for="graph" attr.name="title" attr.type="string"/>
   <key id="g_author" for="graph" attr.name="author" attr.type="string"/>
   <key id="g_date" for="graph" attr.name="date" attr.type="double"/>
+  <key id="g_modularity" for="graph" attr.name="modularity" attr.type="double"/>
   <key id="v_code" for="node" attr.name="code" attr.type="string"/>
   <key id="v_name" for="node" attr.name="name" attr.type="string"/>
   <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
@@ -20,6 +21,7 @@
     <data key="g_title">Remorse</data>
     <data key="g_author">Samuel Taylor Coleridge</data>
     <data key="g_date">1813</data>
+    <data key="g_modularity">0.435185185185185</data>
     <node id="n0">
       <data key="v_code">zul</data>
       <data key="v_name">Zulimez</data>
@@ -58,7 +60,7 @@
       <data key="v_gender">m</data>
       <data key="v_word_count">352</data>
       <data key="v_top_20_distinctive_words">[&apos;the&apos;, &apos;my&apos;, &apos;lord&apos;, &apos;grieve&apos;, &apos;of&apos;, &apos;to&apos;, &apos;your&apos;, &apos;you&apos;, &apos;holy&apos;, &apos;prove&apos;, &apos;he&apos;, &apos;that&apos;, &apos;i&apos;, &apos;this&apos;, &apos;have&apos;, &apos;and&apos;, &apos;trust&apos;, &apos;false&apos;, &apos;moresco&apos;, &apos;inquisition&apos;]</data>
-      <data key="v_community">2</data>
+      <data key="v_community">1</data>
     </node>
     <node id="n5">
       <data key="v_code">ord</data>
@@ -98,7 +100,7 @@
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
       <data key="v_top_20_distinctive_words">[&apos;zulimez&apos;, &apos;frightful&apos;, &apos;funeral&apos;, &apos;fumes&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fruits&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;frost&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;genial&apos;, &apos;friendless&apos;, &apos;friend.&apos;, &apos;friend&apos;, &apos;fretted&apos;, &apos;fret&apos;, &apos;fresh&apos;, &apos;frequent&apos;]</data>
-      <data key="v_community">5</data>
+      <data key="v_community">1</data>
     </node>
     <node id="n10">
       <data key="v_code">fam</data>
@@ -106,7 +108,7 @@
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
       <data key="v_top_20_distinctive_words">[&apos;zulimez&apos;, &apos;frightful&apos;, &apos;funeral&apos;, &apos;fumes&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fruits&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;frost&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;genial&apos;, &apos;friendless&apos;, &apos;friend.&apos;, &apos;friend&apos;, &apos;fretted&apos;, &apos;fret&apos;, &apos;fresh&apos;, &apos;frequent&apos;]</data>
-      <data key="v_community">6</data>
+      <data key="v_community">1</data>
     </node>
     <node id="n11">
       <data key="v_code">ser</data>
@@ -138,7 +140,7 @@
       <data key="v_gender">g</data>
       <data key="v_word_count">0</data>
       <data key="v_top_20_distinctive_words">[&apos;zulimez&apos;, &apos;frightful&apos;, &apos;funeral&apos;, &apos;fumes&apos;, &apos;fulness&apos;, &apos;full&apos;, &apos;fruits&apos;, &apos;frozen&apos;, &apos;frowning&apos;, &apos;frost&apos;, &apos;from&apos;, &apos;friends&apos;, &apos;genial&apos;, &apos;friendless&apos;, &apos;friend.&apos;, &apos;friend&apos;, &apos;fretted&apos;, &apos;fret&apos;, &apos;fresh&apos;, &apos;frequent&apos;]</data>
-      <data key="v_community">7</data>
+      <data key="v_community">0</data>
     </node>
     <edge source="n0" target="n1">
       <data key="e_weight">306</data>

@@ -8,6 +8,7 @@
   <key id="g_title" for="graph" attr.name="title" attr.type="string"/>
   <key id="g_author" for="graph" attr.name="author" attr.type="string"/>
   <key id="g_date" for="graph" attr.name="date" attr.type="double"/>
+  <key id="g_modularity" for="graph" attr.name="modularity" attr.type="double"/>
   <key id="v_code" for="node" attr.name="code" attr.type="string"/>
   <key id="v_name" for="node" attr.name="name" attr.type="string"/>
   <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
@@ -20,6 +21,7 @@
     <data key="g_title">Orra</data>
     <data key="g_author">Joanna Baillie</data>
     <data key="g_date">1812</data>
+    <data key="g_modularity">0.268051973814719</data>
     <node id="n0">
       <data key="v_code">glo</data>
       <data key="v_name">Glottenbal</data>
@@ -58,7 +60,7 @@
       <data key="v_gender">m</data>
       <data key="v_word_count">682</data>
       <data key="v_top_20_distinctive_words">[&quot;gen&apos;rous&quot;, &apos;maid&apos;, &apos;died&apos;, &apos;fair&apos;, &apos;peace&apos;, &apos;and&apos;, &apos;thy&apos;, &apos;i&apos;, &apos;if&apos;, &apos;be&apos;, &apos;field&apos;, &apos;theobald&apos;, &apos;mind&apos;, &apos;come&apos;, &apos;it&apos;, &apos;that&apos;, &apos;she&apos;, &apos;her&apos;, &apos;not&apos;, &apos;the&apos;]</data>
-      <data key="v_community">1</data>
+      <data key="v_community">2</data>
     </node>
     <node id="n5">
       <data key="v_code">cat</data>
@@ -82,7 +84,7 @@
       <data key="v_gender">m</data>
       <data key="v_word_count">336</data>
       <data key="v_top_20_distinctive_words">[&apos;daughter&apos;, &apos;forgiven&apos;, &apos;feign&apos;, &apos;therefore&apos;, &apos;thou&apos;, &apos;oft&apos;, &apos;gentle&apos;, &quot;e&apos;en&quot;, &apos;he&apos;, &apos;to&apos;, &apos;that&apos;, &apos;son&apos;, &apos;till&apos;, &apos;art&apos;, &apos;hardy&apos;, &apos;mayest&apos;, &apos;hinted&apos;, &apos;hopes&apos;, &apos;lookst&apos;, &apos;zeal&apos;]</data>
-      <data key="v_community">0</data>
+      <data key="v_community">2</data>
     </node>
     <node id="n8">
       <data key="v_code">ele</data>
@@ -90,7 +92,7 @@
       <data key="v_gender">f</data>
       <data key="v_word_count">485</data>
       <data key="v_top_20_distinctive_words">[&apos;alas&apos;, &apos;depress&apos;, &apos;goest&apos;, &apos;restored&apos;, &apos;kindly&apos;, &apos;entreat&apos;, &apos;nay&apos;, &apos;be&apos;, &apos;orra&apos;, &apos;us&apos;, &apos;is&apos;, &apos;soon&apos;, &apos;came&apos;, &apos;thou&apos;, &apos;thus&apos;, &apos;it&apos;, &apos;not&apos;, &apos;thy&apos;, &apos;her&apos;, &apos;to&apos;]</data>
-      <data key="v_community">0</data>
+      <data key="v_community">2</data>
     </node>
     <node id="n9">
       <data key="v_code">orr</data>
@@ -98,7 +100,7 @@
       <data key="v_gender">f</data>
       <data key="v_word_count">4094</data>
       <data key="v_top_20_distinctive_words">[&apos;sounds&apos;, &apos;awake&apos;, &apos;awful&apos;, &apos;dreadful&apos;, &apos;beneath&apos;, &apos;earth&apos;, &apos;darkness&apos;, &apos;intercourse&apos;, &apos;past&apos;, &apos;air&apos;, &apos;back&apos;, &apos;dark&apos;, &apos;horrible&apos;, &apos;living&apos;, &apos;forms&apos;, &apos;hold&apos;, &apos;being&apos;, &apos;power&apos;, &apos;half&apos;, &apos;strange&apos;]</data>
-      <data key="v_community">0</data>
+      <data key="v_community">1</data>
     </node>
     <node id="n10">
       <data key="v_code">ser</data>
@@ -114,7 +116,7 @@
       <data key="v_gender">f</data>
       <data key="v_word_count">303</data>
       <data key="v_top_20_distinctive_words">[&apos;joy&apos;, &apos;cold&apos;, &apos;ever&apos;, &apos;and&apos;, &apos;pleasure&apos;, &apos;while&apos;, &apos;a&apos;, &apos;ramble&apos;, &apos;fanciful&apos;, &apos;softer&apos;, &apos;tidings&apos;, &apos;grandeur&apos;, &apos;follows&apos;, &apos;quicken&apos;, &apos;forbore&apos;, &apos;blithe&apos;, &apos;catch&apos;, &apos;subjection&apos;, &apos;subsiding&apos;, &apos;suspicious&apos;]</data>
-      <data key="v_community">0</data>
+      <data key="v_community">2</data>
     </node>
     <node id="n12">
       <data key="v_code">out</data>
@@ -130,7 +132,7 @@
       <data key="v_gender">m</data>
       <data key="v_word_count">884</data>
       <data key="v_top_20_distinctive_words">[&apos;unhappy&apos;, &apos;unlock&apos;, &apos;leads&apos;, &apos;secret&apos;, &apos;stranger&apos;, &apos;the&apos;, &apos;sits&apos;, &apos;outlaws&apos;, &apos;deep&apos;, &apos;and&apos;, &apos;men&apos;, &apos;night&apos;, &apos;alone&apos;, &apos;two&apos;, &apos;steed&apos;, &apos;live&apos;, &apos;bear&apos;, &apos;talk&apos;, &apos;here&apos;, &apos;by&apos;]</data>
-      <data key="v_community">1</data>
+      <data key="v_community">2</data>
     </node>
     <node id="n14">
       <data key="v_code">att</data>
@@ -154,7 +156,7 @@
       <data key="v_gender">g</data>
       <data key="v_word_count">40</data>
       <data key="v_top_20_distinctive_words">[&apos;outworks&apos;, &apos;ivy&apos;, &apos;wall&apos;, &quot;o&apos;ergrown&quot;, &apos;deep-tangled&apos;, &apos;thicket&apos;, &apos;wood&apos;, &apos;marks&apos;, &apos;voice&apos;, &apos;a&apos;, &apos;the&apos;, &apos;dismal&apos;, &apos;ruin&apos;, &apos;close&apos;, &apos;ancient&apos;, &apos;that&apos;, &apos;shriek&apos;, &apos;of&apos;, &apos;castle&apos;, &apos;lady&apos;]</data>
-      <data key="v_community">0</data>
+      <data key="v_community">2</data>
     </node>
     <edge source="n0" target="n1">
       <data key="e_weight">119</data>

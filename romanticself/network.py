@@ -54,7 +54,7 @@ def _import_from_raw(data_dir: str, manifest: dict, cache_corpus: bool = True) -
         graph = _update_vert_attrs_from_cast(graph, raw_dir)
         graph = _collect_tokens_by_character(graph, raw_dir)
         graph = _get_character_keywords(graph)
-        graph = _compute_community_structure(graph, use_weights=True)
+        graph = _compute_community_structure(graph)
         graph = _get_community_keywords(graph)
         corpus[play] = graph
     if cache_corpus:
@@ -213,10 +213,10 @@ def _get_character_keywords(graph: ig.Graph, n: int = 20) -> ig.Graph:
     return graph
 
 
-def _compute_community_structure(graph: ig.Graph, use_weights: bool = False) -> ig.Graph:
-    weights = "weight" if use_weights else None
-    graph["communities"] = graph.community_walktrap(weights).as_clustering()
-    graph.vs["community"] = graph["communities"].membership
+def _compute_community_structure(graph: ig.Graph) -> ig.Graph:
+    clustering = graph.community_optimal_modularity()
+    graph.vs["community"] = clustering.membership
+    graph["modularity"] = clustering.modularity
     return graph
 
 
