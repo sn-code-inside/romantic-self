@@ -12,6 +12,7 @@ from igraph import VertexSeq, EdgeSeq
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
+import pandas as pd
 
 GraphCorpus: TypeAlias = dict[str, ig.Graph]
 KeyedTokens: TypeAlias = dict[str, list[str]]
@@ -77,23 +78,25 @@ def _save_corpus_as_graphml(data_dir: str, corpus: GraphCorpus) -> None:
         _graph = _stringify_list_attrs(_graph, "vs")
         _graph.write_graphml(_get_gml_filename(data_dir, graph["play"]))
 
+
 def _stringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
-    assert(which == "vs" or which == "es")
-    vec: VertexSeq|EdgeSeq = eval(f"graph.{which}") #ignore: eval-used
+    assert (which == "vs" or which == "es")
+    vec: VertexSeq | EdgeSeq = eval(f"graph.{which}")  # ignore: eval-used
     for attr in vec.attributes():
         if isinstance(vec[attr][0], list):
             vec[attr] = [repr(val) for val in vec[attr]]
     return graph
 
+
 def _unstringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
     # This will convert any attribute that looks like a Python list into
     # one. That's 0-risk for this particular project! But beware if you
     # ever reuse this code...
-    assert(which == "vs" or which == "str")
-    vec: VertexSeq|EdgeSeq = eval(f"graph.{which}") #ignore: eval-used
+    assert (which == "vs" or which == "str")
+    vec: VertexSeq | EdgeSeq = eval(f"graph.{which}")  # ignore: eval-used
     for attr in vec.attributes():
         try:
-            eval_vec = [eval(val) for val in vec[attr]] #ignore: eval-used
+            eval_vec = [eval(val) for val in vec[attr]]  # ignore: eval-used
             if all(isinstance(val, list) for val in eval_vec):
                 vec[attr] = eval_vec
         except SyntaxError:
@@ -102,9 +105,12 @@ def _unstringify_list_attrs(graph: ig.Graph, which: str) -> ig.Graph:
 
 
 def _import_from_cache(data_dir: str, manifest: dict) -> GraphCorpus:
-    corpus = {play: ig.Graph.Read_GraphML(_get_gml_filename(data_dir, play)) for play in manifest}
-    corpus = {play: _unstringify_list_attrs(graph, "vs") for play,graph in corpus.items()}
-    corpus = {play: _unstringify_list_attrs(graph, "es") for play,graph in corpus.items()}
+    corpus = {play: ig.Graph.Read_GraphML(
+        _get_gml_filename(data_dir, play)) for play in manifest}
+    corpus = {play: _unstringify_list_attrs(
+        graph, "vs") for play, graph in corpus.items()}
+    corpus = {play: _unstringify_list_attrs(
+        graph, "es") for play, graph in corpus.items()}
     return corpus
 
 
@@ -184,7 +190,7 @@ def _get_distinctive_words(documents: Iterable[Iterable[str]], n: int = 20) -> l
     in that one text. E.g. if there are 1000 instances of "the" in the play, and
     one character says "the" 100 times, their term frequency for "the" would
     be calculated as 100/1000 = 0.1. They say 10% of the "the"s.
-    
+
     This is not the method that nltk offers to normalise term frequencies for
     tf-idf. It offers an alternative normalisation strategy, "sublinear
     term frequency". In this strategy, the tf-idf is calculated on the log
@@ -220,11 +226,29 @@ def _compute_community_structure(graph: ig.Graph) -> ig.Graph:
     return graph
 
 
+def view_communities(corpus: GraphCorpus, play: str) -> pd.DataFrame:
+    """View community membership and keywords for passed play"""
+    graph = corpus[play]
+    members = zip(graph.vs["name"],
+                  graph.vs["word_count"], graph.vs["community"])
+    communities = defaultdict(list)
+    for name, wc, comm in members:
+        communities[comm].append((name, wc))
+    communities = {comm: communities[comm] for comm in sorted(communities)}
+    names = [", ".join(name for name, _ in sorted(mem, key=lambda x:x[1], reverse=True))
+             for mem in communities.values()]
+    return pd.DataFrame({
+        "names": names,
+        "keywords": [", ".join(kws) for kws in graph["community_keywords"].values()]
+    })
+
+
 def _get_community_keywords(graph: ig.Graph, n: int = 20) -> ig.Graph:
     keyed_tokens: KeyedTokens = defaultdict(list)
-    for tokens,community in zip(graph.vs["tokens"], graph.vs["community"]):
+    for tokens, community in zip(graph.vs["tokens"], graph.vs["community"]):
         keyed_tokens[community] += tokens
-    keywords = {comm:kws for comm,kws in zip(keyed_tokens, _get_distinctive_words(keyed_tokens.values(), n))}
+    keywords = {comm: kws for comm, kws in zip(
+        keyed_tokens, _get_distinctive_words(keyed_tokens.values(), n))}
     graph["community_keywords"] = keywords
     return graph
 
@@ -233,16 +257,12 @@ def view_characters(corpus: GraphCorpus, play: str, attribute: str, by: str = "w
     """Print human-readable view of characters in a given play"""
     chars = corpus[play].vs
     n = len(chars) if n > len(chars) else n
-    to_print = [(name,attr,by) for name,attr,by in zip(chars["name"], chars[attribute], chars[by])]
+    to_print = [(name, attr, by) for name, attr, by in zip(
+        chars["name"], chars[attribute], chars[by])]
     to_print = sorted(to_print, key=lambda x: x[2], reverse=True)[:n]
-    print(f"Showing {attribute.replace('_',' ')} for top {n} characters in {corpus[play]['title']} by {by.replace('_',' ')}\n")
-    for name,attr,_ in to_print:
+    print(
+        f"Showing {attribute.replace('_',' ')} for top {n} characters in {corpus[play]['title']} by {by.replace('_',' ')}\n")
+    for name, attr, _ in to_print:
         if isinstance(attr, list):
             attr = textwrap.shorten(", ".join(attr), 68)
         print(f"{name:<25}: {attr}")
-
-def view_community_keywords(corpus: GraphCorpus, play: str) -> None:
-    """See most distinctive words per community in the passed play"""
-    print(f"Showing most distinctive words by community in {corpus[play]['title']}\n")
-    for key,val in corpus["harpur"]["community_keywords"].items():
-        print(f"{key:<9}: {', '.join(val)[:90]}...")
