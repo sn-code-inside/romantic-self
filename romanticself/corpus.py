@@ -27,8 +27,15 @@ class EagerCorpus(ABC):
     # For normalisation
     WORD_RGX = re.compile('[A-Za-z]')
 
-    def __init__(self):
+    # For cleaning Gutenberg files
+    GUT_HEADER_RGX = re.compile(
+        r'\A.+\*{3} {0,2}START OF.{,200}\*{3}', flags=re.DOTALL)
+    GUT_LICENCE_RGX = re.compile(r'\*{3} {0,2}END OF.+', flags=re.DOTALL)
+    
+    def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
+        self.data_dir = data_dir
         self.data = dict()
+        self.tokenizer = tokenizer
 
     def __iter__(self):
         """Yields tokenized texts from the corpus"""
@@ -41,7 +48,7 @@ class EagerCorpus(ABC):
         return len(self.data)
 
     def yield_metadata(self, *args):
-        """Yields requested metadata about novels in corpus.
+        """Yields requested metadata about text in corpus.
 
         Arguments:
         - *args (str): metadata values to return"""
@@ -277,18 +284,11 @@ class NovelCorpus(EagerCorpus):
 
     Arguments:
     - data_dir (str): path to txt files
-    - tokenizer (fn): tokenizer of choice. Defaults to nltk.tokenize.word_tokenize"""
-
-    # For cleaning Gutenberg files
-    GUT_HEADER_RGX = re.compile(
-        r'\A.+\*{3} {0,2}START OF.{,200}\*{3}', flags=re.DOTALL)
-    GUT_LICENCE_RGX = re.compile(r'\*{3} {0,2}END OF.+', flags=re.DOTALL)
+    - tokenizer (fn): tokenizer of choice. Defaults to nltk.tokenize.word_tokenize"""    
 
     def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
-        self.data_dir = data_dir
-        self.manifest_pth = data_dir + "/manifest.json"
-        self.data = dict()
-        self.tokenizer = tokenizer
+        self.manifest_pth = os.path.join(data_dir, "manifest.json")
+        super().__init__(data_dir, tokenizer)
 
         # Import manifest file
         with open(self.manifest_pth, "rt") as file:
@@ -478,9 +478,7 @@ class SonnetCorpus(EagerCorpus):
     """Iterator for streaming sonnet files."""
 
     def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
-        self.data_dir = data_dir
-        self.data = dict()
-        self.tokenizer = tokenizer
+        super().__init__(data_dir, tokenizer)
         self.sequences = dict()
 
         # XML methods
@@ -658,6 +656,30 @@ class SonnetCorpus(EagerCorpus):
         sequences = Counter(
             [author for (author, _), _ in self.sequences.items()])
         return f"SonnetCorpus({', '.join([f'{author}: {n} [{sequences[author]}]' for author,n in sonnets.items()])})"
+
+class BiographyCorpus(EagerCorpus):
+    """Iterator for biographies; these require special processing because of the way
+    Romantic biographers integrate correspondence with the biogapher's text."""
+    
+    def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
+        super().__init__(data_dir, tokenizer)
+        self.data = {path:self._import_text(path) for path in os.listdir(data_dir)}
+
+    def _import_text(self, path: str) -> dict:
+        match os.path.splitext(path):
+            case _, ".xml":
+                self._process_xml_biography(path)
+            case _, ".txt":
+                self._process_txt_biography(path)
+            case _, ext:
+                ValueError(f"{ext} is not a known file type")
+    
+    def _process_xml_biography(self, path) -> dict:
+        pass
+
+    def _process_txt_biography(self, path) -> dict:
+        pass
+
 
 
 def ota_xml_to_txt(dir="."):

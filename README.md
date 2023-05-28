@@ -78,7 +78,7 @@ In addition to the listed files, the analysis in *Romanticism and the Contingent
 * [gaskell-2.txt](data/biography-corpus/gaskell-2.txt): Gutenberg
 * [southey.txt](data/biography-corpus/southey.txt): Gutenberg
 
-### In the [Sonnet corpus](#)
+### In the Sonnet corpus
 
 Unfortunately the entire sonnet corpus is in copyright, and cannot be shared in this repository.
 
