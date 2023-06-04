@@ -1,0 +1,12 @@
+{
+    "gaskell.txt": {
+        "author": "Elizabeth Gaskell",
+        "title": "The Life of Charlotte Brontë",
+        "date": "1857"
+    },
+    "southey.txt": {
+        "author": "Robert Southey",
+        "title": "The Life of Nelson",
+        "date": "1813"
+    }
+}

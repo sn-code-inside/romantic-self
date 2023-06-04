@@ -1,8 +1,8 @@
 """Utilities for accessing Research Corpora"""
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections import Counter
-from functools import partial
+from functools import cached_property, partial, reduce
 import os
 import re
 import time
@@ -18,24 +18,18 @@ from nltk.corpus import stopwords
 import nltk
 from lxml import etree
 
-from romanticself.utils import strip_sonnet_numbering
+from romanticself.utils import strip_sonnet_numbering, GUT_HEADER_RGX, GUT_LICENCE_RGX, WORD_RGX, file_ext
+from romanticself.biography import Biography, XMLBiography, TextBiography
+
 
 class EagerCorpus(ABC):
     """Abstract class for Eager Corpora, e.g. novel and sonnet corpora, providing
     consistent basic interface."""
 
-    # For normalisation
-    WORD_RGX = re.compile('[A-Za-z]')
-
-    # For cleaning Gutenberg files
-    GUT_HEADER_RGX = re.compile(
-        r'\A.+\*{3} {0,2}START OF.{,200}\*{3}', flags=re.DOTALL)
-    GUT_LICENCE_RGX = re.compile(r'\*{3} {0,2}END OF.+', flags=re.DOTALL)
-    
     def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
         self.data_dir = data_dir
-        self.data = dict()
         self.tokenizer = tokenizer
+        self.data: dict
 
     def __iter__(self):
         """Yields tokenized texts from the corpus"""
@@ -72,7 +66,7 @@ class JSTORCorpus(object):
     # For cleaning txt files. Finds xml tags or end-of-line hyphens to delete
     CLEAN_RGX = re.compile(r'<[^>]+>|(?<=\w)-\s+(?=\w)')
 
-    def __init__(self, meta_dir, data_dir, corpus_meta=None):
+    def __init__(self, meta_dir, data_dir, corpus_meta):
         self.meta_dir = meta_dir
         self.data_dir = data_dir
         self.corpus_meta = corpus_meta
@@ -88,7 +82,7 @@ class JSTORCorpus(object):
 
     def __iter__(self):
         for key in self.corpus_meta:
-            with open(key) as file:
+            with open(key, "rt", encoding="utf-8") as file:
                 # Get text
                 raw_xml = file.read()
                 # Strip tags
@@ -284,7 +278,7 @@ class NovelCorpus(EagerCorpus):
 
     Arguments:
     - data_dir (str): path to txt files
-    - tokenizer (fn): tokenizer of choice. Defaults to nltk.tokenize.word_tokenize"""    
+    - tokenizer (fn): tokenizer of choice. Defaults to nltk.tokenize.word_tokenize"""
 
     def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
         self.manifest_pth = os.path.join(data_dir, "manifest.json")
@@ -298,7 +292,7 @@ class NovelCorpus(EagerCorpus):
         for key in self.data:
             text = self._read_normalise(os.path.join(self.data_dir, key))
             tokens = [tk for tk in self.tokenizer(
-                text) if self.WORD_RGX.match(tk)]
+                text) if WORD_RGX.match(tk)]
             self.data[key]["tokens"] = tokens
 
         # Print import message
@@ -362,8 +356,8 @@ class NovelCorpus(EagerCorpus):
             text = file.read()
 
         # Strip gutenberg bufferplate
-        text = self.GUT_HEADER_RGX.sub("", text)
-        text = self.GUT_LICENCE_RGX.sub("", text)
+        text = GUT_HEADER_RGX.sub("", text)
+        text = GUT_LICENCE_RGX.sub("", text)
 
         # Normalise
         text = text.lower()
@@ -446,8 +440,8 @@ class NovelPOSCorpus(NovelCorpus):
             text = file.read()
 
         # Strip gutenberg bufferplate
-        text = self.GUT_HEADER_RGX.sub("", text)
-        text = self.GUT_LICENCE_RGX.sub("", text)
+        text = GUT_HEADER_RGX.sub("", text)
+        text = GUT_LICENCE_RGX.sub("", text)
 
         # Normalise
         # Strip underscores from before words
@@ -479,7 +473,7 @@ class SonnetCorpus(EagerCorpus):
 
     def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
         super().__init__(data_dir, tokenizer)
-        self.sequences = dict()
+        self.sequences: dict = dict()
 
         # XML methods
         self._PARSER = etree.XMLParser()
@@ -526,7 +520,8 @@ class SonnetCorpus(EagerCorpus):
         get_nodes = self._make_xpath_query(xpath)
         nodes = get_nodes(sonnet_tree)
         # type: ignore
-        return etree.tostring(nodes[0], method="text", encoding="unicode").strip() if nodes else ''  # type: ignore
+        # type: ignore
+        return etree.tostring(nodes[0], method="text", encoding="unicode").strip() if nodes else ''
 
     def _get_author(self, sonnet_tree: etree._ElementTree) -> str:
         return self._get_text_node("//tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author", sonnet_tree)
@@ -612,11 +607,11 @@ class SonnetCorpus(EagerCorpus):
 
     def _get_sonnet_title(self, line_group: etree._Element) -> list:
         tag = self._prefix_tag("head")
-        if line_group[0].tag == tag:            
+        if line_group[0].tag == tag:
             # Strip roman numerals
             title_text = strip_sonnet_numbering(line_group[0].text)
             title_tokens = self.tokenizer(title_text)
-            return [token.lower() for token in title_tokens if self.WORD_RGX.match(token)]
+            return [token.lower() for token in title_tokens if WORD_RGX.match(token)]
         else:
             return []
 
@@ -644,7 +639,7 @@ class SonnetCorpus(EagerCorpus):
         tokens = []
         for line in line_group.iter(tag):
             line_tokens = [token.lower() for token in self.tokenizer(
-                line.text) if self.WORD_RGX.match(token)]
+                line.text) if WORD_RGX.match(token)]
             tokens.append(line_tokens)
         return tokens
 
@@ -657,29 +652,74 @@ class SonnetCorpus(EagerCorpus):
             [author for (author, _), _ in self.sequences.items()])
         return f"SonnetCorpus({', '.join([f'{author}: {n} [{sequences[author]}]' for author,n in sonnets.items()])})"
 
-class BiographyCorpus(EagerCorpus):
+
+class BiographyCorpus():
     """Iterator for biographies; these require special processing because of the way
     Romantic biographers integrate correspondence with the biogapher's text."""
-    
+
     def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
-        super().__init__(data_dir, tokenizer)
-        self.data = {path:self._import_text(path) for path in os.listdir(data_dir)}
+        self.data_dir = data_dir
+        self.tokenizer = tokenizer
+        self.txt_manifest = os.path.join(self.data_dir, "manifest.json")
+        self.data = self._data
 
-    def _import_text(self, path: str) -> dict:
-        match os.path.splitext(path):
-            case _, ".xml":
-                self._process_xml_biography(path)
-            case _, ".txt":
-                self._process_txt_biography(path)
-            case _, ext:
-                ValueError(f"{ext} is not a known file type")
+    @cached_property
+    def _data(self) -> dict[str, Biography]:
+        files = [path for path in os.listdir(self.data_dir) if file_ext(path) in {".txt", ".xml"}]
+        files = sorted(files)
+        files = reduce(self._concat_files, files, [])
+        return dict(self._import_biography(path) for path in files)
     
-    def _process_xml_biography(self, path) -> dict:
-        pass
+    def __iter__(self):
+        return (biography for biography in self.data.values())
+    
+    def _concat_files(self, acc: list, nxt: str) -> list[str]:
+        if not acc:
+            return [nxt]
+        elif self._is_same_book(acc[-1], nxt):
+            previous = acc[-1] if isinstance(acc[-1], list) else [acc[-1]]
+            final = previous + [nxt]
+            return acc[:-1] + [final]
+        else:
+            return acc + [nxt]
+    
+    def _is_same_book(self, acc: list | str, nxt: str) -> bool:
+        nxt_stub = self._stub(nxt)
+        match acc:
+            case list():
+                return nxt_stub in [self._stub(name) for name in acc]
+            case str():
+                return nxt_stub == self._stub(acc)
+            
 
-    def _process_txt_biography(self, path) -> dict:
-        pass
+    @staticmethod
+    def _stub(filename) -> str:
+        return filename.split("-")[0]
 
+    def _import_biography(self, path: str | list) -> tuple[str, Biography]:
+        full_path = self._complete_paths(path)
+        match path:
+            case list():
+                return (self._stub(path[0]) + ".txt", TextBiography(full_path, self.txt_manifest, self.tokenizer))
+            case str():
+                if file_ext(path) == ".txt":
+                    return (path, TextBiography(full_path, self.txt_manifest, self.tokenizer))
+                elif file_ext(path) == ".xml":
+                    return (path, XMLBiography(full_path, self.tokenizer)) #type: ignore
+                else:
+                    raise ValueError
+            case _:
+                raise ValueError
+            
+    def _complete_paths(self, path: list | str):
+        match path:
+            case list():
+                return [os.path.join(self.data_dir, pth) for pth in path]
+            case str():
+                return os.path.join(self.data_dir, path)
+    
+    def __repr__(self):
+        return f'{type(self).__name__}("{self.data_dir}", tokenizer = {self.tokenizer.__name__})'
 
 
 def ota_xml_to_txt(dir="."):
