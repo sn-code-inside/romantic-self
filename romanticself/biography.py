@@ -18,40 +18,6 @@ class Sentence(NamedTuple):
     text: str
 
 class Biography(ABC):
-    @property
-    @abstractmethod
-    def author(self) -> str:
-        ...
-    
-    @property
-    @abstractmethod
-    def author_id(self) -> str:
-        ...
-    
-    @property
-    @abstractmethod
-    def title(self) -> str:
-        ...
-
-    @property
-    @abstractmethod
-    def date(self) -> str:
-        ...
-    
-    @property
-    @abstractmethod
-    def sentences(self) -> Iterable[Sentence]:
-        ...
-
-    @abstractmethod
-    def iter_tokens(self, allowed_authors: Iterable[str]) -> Iterable[str]:
-        ...
-    
-    def __repr__(self):
-        return f"{type(self).__name__}({self.author}, {self.title}, {self.date})"
-
-class TextBiography(Biography):
-    """Text file biography."""
 
     def __init__(self, path: str | list[str], manifest: str, tokenizer: Callable[[str], list[str]]):
         self.path = path
@@ -70,9 +36,69 @@ class TextBiography(Biography):
             return os.path.basename(self.path)
         elif isinstance(self.path, list):
             first_file = os.path.basename(self.path[0])
-            return first_file.split("-")[0] + ".txt"
+            return first_file.split("-")[0] + self.extension
         else:
             raise TypeError
+    
+    @property
+    @abstractmethod
+    def extension(self) -> str:
+        ...
+    
+    @property
+    @abstractmethod
+    def author(self) -> str:
+        ...
+    
+    @property
+    @abstractmethod
+    def author_id(self) -> str:
+        ...
+    
+    @property
+    def all_authors(self) -> set[str]:
+        return set(self.author_id)
+
+    @property
+    @abstractmethod
+    def title(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def date(self) -> str:
+        ...
+    
+    @property
+    @abstractmethod
+    def sentences(self) -> Iterable[Sentence]:
+        ...
+
+    @property
+    @abstractmethod
+    def subject(self) -> str:
+        ...
+
+    @property
+    def subject_name(self) -> str:
+        return self.subject
+
+    @abstractmethod
+    def iter_tokens(self, allowed_authors: Iterable[str]) -> Iterable[str]:
+        ...
+    
+    def __repr__(self):
+        return f"{type(self).__name__}({self.author}, {self.title}, {self.date})"
+
+class TextBiography(Biography):
+    """Text file biography."""
+
+    def __init__(self, path: str | list[str], manifest: str, tokenizer: Callable[[str], list[str]]):
+        super().__init__(path, manifest, tokenizer)
+
+    @property
+    def extension(self) -> str:
+        return ".txt"
     
     @property
     def author(self) -> str:
@@ -81,6 +107,10 @@ class TextBiography(Biography):
     @property
     def author_id(self) -> str:
         return self.author
+    
+    @property
+    def subject(self) -> str:
+        return self.manifest[self.filename]["subject"]
 
     @property
     def date(self) -> str:
@@ -117,19 +147,25 @@ class XMLBiography(Biography):
         "xml": "http://www.w3.org/XML/1998/namespace"
     }
 
-    def __init__(self, path: str, tokenizer: Callable[[str], list[str]]):
-        self.path = path
+    def __init__(self, path: str | list[str], manifest: str, tokenizer: Callable[[str], list[str]]):
+        super().__init__(path, manifest, tokenizer)
         self.parser = etree.XMLParser()
         self._paragraphs: list[Paragraph] = []
         self._floating_author_dict: dict[str, str] = {}
-        self.tokenizer = tokenizer
 
     @cached_property
     def tree(self) -> etree._ElementTree:
         """Element tree of the underlying xml file"""
-        with open(self.path, 'rb') as xml_bytes:
-            tree = etree.parse(xml_bytes, self.parser)
+        if isinstance(self.path, str):
+            with open(self.path, 'rb') as xml_bytes:
+                tree = etree.parse(xml_bytes, self.parser)
+        else:
+            raise TypeError("Multi-file XMLBiographies not supported")
         return tree
+    
+    @property
+    def extension(self) -> str:
+        return ".xml"
 
     @cached_property
     def author_id(self) -> str:
@@ -167,6 +203,14 @@ class XMLBiography(Biography):
     def sentences(self) -> Iterable[Sentence]:
         """All the sentences in the biography"""
         return chain(*[self._split_paragraph(para) for para in self.paragraphs])
+    
+    @property
+    def subject(self) -> str:
+        return self.manifest[self.filename]["subject"]
+    
+    @property
+    def subject_name(self) -> str:
+        return self.manifest[self.filename]["subject_name"]
     
     def iter_tokens(self, allowed_authors: Iterable[str] | None = None) -> Iterable[str]:
         def _true(_):

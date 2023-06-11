@@ -2,11 +2,29 @@
     "gaskell.txt": {
         "author": "Elizabeth Gaskell",
         "title": "The Life of Charlotte Brontë",
-        "date": "1857"
+        "date": "1857",
+        "subject": "Charlotte Brontë"
     },
     "southey.txt": {
         "author": "Robert Southey",
         "title": "The Life of Nelson",
-        "date": "1813"
+        "date": "1813",
+        "subject": "Horatio Nelson"
+    },
+    "medwin.xml": {
+        "subject": "PeShell1822",
+        "subject_name": "Percy Shelley"
+    },
+    "lockhart.xml": {
+        "subject": "WaScott",
+        "subject_name": "Walter Scott"
+    },
+    "moore.xml": {
+        "subject": "LdByron",
+        "subject_name": "Lord Byron"
+    },
+    "galt.xml": {
+        "subject": "LdByron",
+        "subject_name": "Lord Byron"
     }
 }

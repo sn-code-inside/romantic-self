@@ -705,7 +705,7 @@ class BiographyCorpus():
                 if file_ext(path) == ".txt":
                     return (path, TextBiography(full_path, self.txt_manifest, self.tokenizer))
                 elif file_ext(path) == ".xml":
-                    return (path, XMLBiography(full_path, self.tokenizer)) #type: ignore
+                    return (path, XMLBiography(full_path, self.txt_manifest, self.tokenizer))
                 else:
                     raise ValueError
             case _:
