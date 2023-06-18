@@ -1,6 +1,6 @@
-# Contingent Selves: Romanticism and the Challenge of Representation
+# Romanticism and the Contingent Self
 
-Code supporting the analysis in my in-preparation monograph *Contingent Selves: Romanticism and the Challenge of Representation*. The main functionality is packaged up in the `romanticself` Python package. Jupyter Notebooks in the home directory show how I generated the tables and figures for each chapter.
+Code supporting the analysis in my in-preparation monograph *Romanticism and the Contingent Self*. The main functionality is packaged up in the `romanticself` Python package. Jupyter Notebooks in the home directory show how I generated the tables and figures for each chapter.
 
 ## Getting Started
 
@@ -15,18 +15,25 @@ pip3 install bs4
 
 The repository is divided into four main parts:
 
-* `data`: The data directory. Only some of the data can be posted here for copyright reasons.
-* `figures`: Rendered versions of figures used in the books
-* `romanticself`: A Python package bundling the classes used to perform the analysis
-* `scripts`: Some  scripts used to run larger analyses on remote machines
+* [data](data): The data directory. Only some of the data can be posted here for copyright reasons. (See below.)
+* [figures](figures): Rendered versions of figures used in the book
+* [romanticself](romanticself): A Python package bundling the classes used to ingest data for the analysis
+* [scripts](scripts): Some  scripts used to run larger analyses on remote machines
 
-In the main directory, you will find one Jupyter Notebook for each chapter of the book. Each notebook displays how I applied the code in the repo to produce the analysis in the corresponding chapter. As mentioned above, this analysis will not be reproducible on your machine due to copyright issues in the data.
+In the main directory, you will find one Jupyter Notebook for each chapter of the book. Each notebook displays how I applied the code in the repo to produce the analysis in the corresponding chapter. As mentioned above, this analysis will not be fully reproducible on your machine due to copyright issues in the data.
+
+* [Chapter 1](Chapter%201%20-%20Must%20I%20Exist.ipynb): Analysis of the JSTOR Corpus to establish how 'selfhood' is discussed in contemporary Romantic scholarship
+* Chapter 2 does not include any digital analysis.
+* [Chapter 3](Chapter%203%20-%20Fiction.ipynb): Analysis of the novel corpus to explore the portrayal of self in the *Bildungsroman* and the 'network novel'
+* [Chapter 4](Chapter%204%20-%20Lyric.ipynb): Analysis of the sonnet corpus to explore how genre, narrative and deixis contribute to the portrayal of self in Romantic lyric poetry
+* [Chapter 5](Chapter%205%20-%20Drama.ipynb): Network analysis of two drama corpora to establish how characterisation and setting work together to undo the self in Romantic tragedy
+* [Chapter 6](Chapter%206%20-%20Life.ipynb): Sentiment analysis of the biography corpus to explore how Thomas Moore and other Romantic biographers construct the selfhood of their subject
 
 ## Licences
 
 The code is licensed under the MIT license in the [LICENSE] file.
 
-Some files in [data] have other licences. If the licence is 'Gutenberg', then the text of the licence is included in the file. The [CC0](https://creativecommons.org/choose/zero/) licence means the file is in the public domain.
+Some files in [data](data) have other licences. If the licence is 'Gutenberg', then the text of the licence is included in the file. The [CC0](https://creativecommons.org/choose/zero/) licence means the file is in the public domain.
 
 ### In the [Novel corpus](data/novel-corpus/)
 
@@ -85,3 +92,5 @@ Unfortunately the entire sonnet corpus is in copyright, and cannot be shared in 
 ### In the [Drama corpus](data/drama-networks/)
 
 This corpus only contains facts about the network structure of the plays, and is not subject to copyright.
+
+[data]: data
