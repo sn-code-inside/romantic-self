@@ -1,10 +1,11 @@
 from abc import abstractmethod, ABC
+from collections import Counter
 from functools import cached_property, singledispatch
-from itertools import chain
+from itertools import chain, repeat
 import os
 import json
 import re
-from typing import Callable, Iterable, NamedTuple, Protocol, TypeAlias
+from typing import Callable, Iterable, MutableSequence, NamedTuple, TypedDict
 from lxml import etree
 from romanticself.utils import clean_text
 from nltk.tokenize import sent_tokenize
@@ -16,6 +17,13 @@ class Paragraph(NamedTuple):
 class Sentence(NamedTuple):
     author: str
     text: str
+
+class SentimentData(TypedDict):
+    biography: list[str]
+    sent_idx: list[int]
+    model: list[str]
+    score: MutableSequence[float]
+    author: list[str]
 
 class Biography(ABC):
 
@@ -276,3 +284,10 @@ class XMLBiography(Biography):
     def find(self, path: str) -> etree._Element | None:
         """Get first match for `path`. Automatically namespaced to tei"""
         return self.tree.find(path, namespaces=self.NS)
+
+    @property
+    def author_breakdown(self) -> dict:
+        author_tokens = Counter()
+        for author,sentence in self.sentences:
+            author_tokens[author] += len(self.tokenizer(sentence))
+        return author_tokens

@@ -21,6 +21,10 @@ data/sonnet-corpus
 # old files from PhD used to generate clean csvs for person deixis analysis
 data/sonnet-deixis-from-phd
 
+# copyright data in incorrect format
+data/biography-corpus/all-sentences.csv
+data/biography-corpus/scored-sentences.csv
+
 # Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -163,3 +167,4 @@ cython_debug/
 
 # vscode
 .vscode
+.Rproj.user

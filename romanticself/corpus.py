@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections import Counter
+import csv
 from functools import cached_property, partial, reduce
 import os
 import re
@@ -720,6 +721,30 @@ class BiographyCorpus():
     
     def __repr__(self):
         return f'{type(self).__name__}("{self.data_dir}", tokenizer = {self.tokenizer.__name__})'
+    
+    def __getattr__(self, name):
+        """Allow access of individual biographies by name"""
+        txt_name = name + ".txt"
+        xml_name = name + ".xml"
+        if txt_name in self.data:
+            return self.data[txt_name]
+        elif xml_name in self.data:
+            return self.data[xml_name]
+        else:
+            raise AttributeError()
+
+
+    def to_csv(self, out_path: str) -> None:
+        """Export all sentences from corpus with index numbers, authorship
+        and text, for use in other software"""
+        with open(out_path, "wt", encoding="utf-8") as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(["biography", "bio_author", "sent_idx", "sent_author", "text"])
+
+            for biography in self:
+                print(f"Writing {biography.filename} to {out_path}")
+                for idx, sentence in enumerate(biography.sentences):
+                    writer.writerow((biography.filename, biography.author_id, idx, sentence.author, sentence.text))
 
 
 def ota_xml_to_txt(dir="."):
