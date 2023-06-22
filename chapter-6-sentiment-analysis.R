@@ -74,23 +74,6 @@ figure_6_2 <- corpus %>%
 
 ggsave("figures/figure_6_2.png", plot = figure_6_2, width = 13, height = 9)
 
-# Figure 6.3: Plot of Moore's biography in detail
-corpus %>% 
-  filter(biography == "moore.xml") %>% 
-  mutate(across(syuzhet:vader, \(x) zoo::rollmean(x, k = 500, fill = NA))) %>% 
-  pivot_longer(syuzhet:vader, names_to = "model", values_to = "score") %>% 
-  mutate(
-    sent_author = case_when(
-      sent_author == "ThMoore1852" ~ "Moore",
-      sent_author == "LdByron" ~ "Byron",
-      .default = "Other"
-    )
-  ) %>% 
-  ggplot(aes(sent_idx, score, color = sent_author)) +
-  scale_color_grey() +
-  facet_wrap(vars(model)) +
-  geom_path(aes(group = 1))
-
 # Are the sentiment scores normally distributed?
 corpus %>% 
   bio_author_only() %>% 
@@ -392,3 +375,56 @@ figure_6_4 <- figure_6_4_data %>%
   ) 
 
 ggsave("figures/figure_6_4.png", figure_6_4, width = 11, height = 7)
+
+# Volume 1 vs Volume 2
+corpus %>% 
+  bio_author_only() %>% 
+  filter(biography == "moore.xml") %>% 
+  mutate(
+    volume = if_else(sent_idx <= moore_volume_line$sent_idx, 1, 2)
+  ) %>% 
+  group_by(volume) %>% 
+  summarise(
+    across(syuzhet:vader, \(x) sd(x, na.rm = T))
+  ) %>% 
+  summarise(
+    across(syuzhet:vader, \(x) diff(x)/sum(x))
+  )
+
+# The peak of Figure 6.4
+find_local_optimum() # moore
+find_local_optimum(.biography = "galt.xml")  
+
+# Appendix 8.3
+# Moore's biography with all the letters etc. included
+moore_volume_line_2 <- corpus %>% 
+  filter(biography == "moore.xml") %>% 
+  filter(str_detect(text, "The circumstances under which")) %>% 
+  .$sent_idx
+
+appendix_8_3 <- corpus %>% 
+  filter(biography == "moore.xml") %>% 
+  mutate(
+    syuzhet = zoo::rollmean(syuzhet, k = 500, fill = NA),
+    sent_author = case_when(
+      sent_author == "ThMoore1852" ~ "Moore",
+      sent_author == "LdByron" ~ "Byron",
+      .default = "Other"
+    )
+  ) %>% 
+  ggplot(aes(sent_idx, syuzhet, color = sent_author)) +
+  geom_path(aes(group = 1)) +
+  geom_vline(
+    xintercept = moore_volume_line_2,
+    linetype = 2,
+    color = "darkgrey"
+  ) +
+  labs(
+    x = "Sentence",
+    y = "Sentiment score (syuzhet; rolling mean)",
+    color = "Author"
+  ) +
+  annotate("text", x = moore_volume_line_2 - 1000, y = 0, label = "Volume 1") +
+  annotate("text", x = moore_volume_line_2 + 1000, y = 0, label = "Volume 2")
+
+ggsave("figures/appendix_8_3.png", plot = appendix_8_3, width = 11, height = 5)
