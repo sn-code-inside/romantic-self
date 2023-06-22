@@ -122,15 +122,6 @@ figure_6_3 %>%
   mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% 
   write_csv("figures/figure_6_3.csv")
 
-# Difference between Moore and Galt
-figure_6_4 %>% 
-  filter(biography %in% c("moore.xml", "galt.xml")) %>% 
-  group_by(model) %>% 
-  summarise(
-    mean = diff(mean),
-    sd = diff(sd)
-  )
-
 # Visualise Moore and Galt with annotations
 figure_6_4_data <- corpus %>% 
   bio_author_only() %>% 
@@ -140,12 +131,264 @@ figure_6_4_data <- corpus %>%
     score = zoo::rollmean(syuzhet, 250, fill = NA)
   )
 
-figure_6_4_data %>% 
+# Indicate boundary between the two volumes of Moore's Byron
+moore_volume_line <- corpus %>% 
+  bio_author_only() %>% 
+  filter(biography == "moore.xml") %>% 
+  filter(str_detect(text, "The circumstances under which")) %>% 
+  select(biography, sent_idx) %>% 
+  mutate(
+    label = c("Volume 1", "Volume 2") %>% list(),
+    offset = c(sent_idx - 310, sent_idx + 310) %>% list(),
+    y = -0.12
+  )
+
+# Annotate key plot points with text labels
+create_label_row <-
+  function(x,
+           .new_data,
+           .bio,
+           .pattern,
+           .off,
+           .extract,
+           .lab_off,
+           .x_off = 0) {
+    x %>%
+      rows_append(
+        .new_data %>%
+          filter(biography == .bio) %>%
+          filter(str_detect(text, .pattern)) %>%
+          transmute(
+            biography = biography,
+            score = score,
+            offset = score + .off,
+            extract = .extract,
+            label_offset = score + .lab_off,
+            sent_idx = sent_idx,
+            label_x = sent_idx + .x_off
+          )
+      )
+  }
+
+# Helper for finding local maxima on the graph
+find_local_optimum <-
+  function(data = figure_6_4_data,
+           .biography = "moore.xml",
+           .after = 0,
+           .before = Inf,
+           .optimum = max) {
+    data %>%
+      filter(biography == .biography,
+             sent_idx >= .after,
+             sent_idx <= .before,) %>%
+      filter(score == .optimum(score, na.rm = TRUE))
+  }
+
+figure_6_4_annotations <- tibble::tibble(
+  biography = as.character(),
+  # for facet
+  score = as.numeric(),
+  # for 'y' parameter of geom_segment
+  offset = as.numeric(),
+  # for 'yend' parameter of geom_segment
+  sent_idx = as.numeric(),
+  # for x values of geom_segment
+  extract = as.character(),
+  # for 'label' of geom_text
+  label_offset = as.numeric(),
+  # for 'y' parameter of geom_text
+  label_x = as.numeric()
+  # for 'x' parameter of geom_text
+) %>%
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "he sailed for Ostend",
+    0.115,
+    "'... he sailed\nfor Ostend.'",
+    0.15
+  ) %>%
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "he was no more!",
+    0.13,
+    "'... he was\nno more!'",
+    0.16) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "bore him towards his beloved Greece",
+    0.08,
+    "'the breeze ... bore him\ntowards his beloved Greece'",
+    0.11
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "galt.xml",
+    "animal passions mastered",
+    0.1,
+    "His 'animal passions'\nmaster him",
+    0.13
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "galt.xml",
+    "the hollow valley",
+    -0.09,
+    "Byron gloomy and metaphysical\non his first trip to Greece",
+    -0.125
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "galt.xml",
+    "after committing murder",
+    0.1,
+    "Byron contemplates\nmurder",
+    0.13
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "lone and unfriended",
+    -0.1,
+    "'lone and unfriended'\nin the House of Lords",
+    -0.13
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "galt.xml",
+    "chiefs of the factions",
+    0.09,
+    "Byron attempts to 'reconcile' the\n'factions' in Missolonghi",
+    0.13
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "galt.xml",
+    "never awoke again",
+    0.1,
+    "He dies",
+    0.11
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "first had the happiness",
+    0.1,
+    "'It was at this period\nI first had the happiness\nof seeing ... Lord Byron'",
+    0.15,
+    200
+  ) %>% 
+  # create_label_row(
+  #   figure_6_4_data,
+  #   "moore.xml",
+  #   "nights of the same description",
+  #   0.1,
+  #   "Moore hobnobs with Byron\nin London",
+  #   0.13
+  # ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "county of Durham",
+    -0.12,
+    "Byron marries\nAnnabella Milbanke",
+    -0.145
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "she had breathed her last",
+    -0.15,
+    "Byron's mother dies",
+    -0.16
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "eleven years from this period",
+    0.16,
+    "Byron swims the Hellespont",
+    0.185
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "dictated by justice or by vanity",
+    0.1,
+    "The 'justice' of Byron's\nfeelings towards his wife",
+    0.125
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "fair object of this last",
+    -0.11,
+    "Byron meets his 'last love',\n Teresa Guiccioli",
+    -0.135
+  ) %>% 
+  # create_label_row(
+  #   figure_6_4_data,
+  #   "moore.xml",
+  #   "in the shadow of the Alps",
+  #   -0.1,
+  #   "Byron defends himself in\n a bitter pamphlet",
+  #   -0.125
+  # ) %>% 
+  # create_label_row(
+  #   figure_6_4_data,
+  #   "moore.xml",
+  #   "all the followers of Pope",
+  #   0.08,
+  #   "Byron enthuses about\nAlexander Pope",
+  #   0.105
+  # ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "death of his daughter",
+    -0.1,
+    "Byron's daughter\nAllegra dies",
+    -0.125
+  ) %>% 
+  create_label_row(
+    figure_6_4_data,
+    "moore.xml",
+    "love of solitary rambles",
+    0.1,
+    "Young Byron's 'love of\nsolitary rambles'",
+    0.15,
+    15
+  )
+
+figure_6_4 <- figure_6_4_data %>% 
   ggplot(aes(sent_idx, score)) +
   geom_line() +
-  geom_smooth(aes(sent_idx, syuzhet), method = "gam", alpha = 0.2) +
+  geom_smooth(aes(sent_idx, syuzhet), method = "loess", alpha = 0.2) +
   facet_grid(rows = vars(biography), labeller = bio_labeller) +
   labs(
     x = "Sentence",
     y = "Sentiment score (syuzhet; rolling mean)"
-  )
+  ) +
+  geom_vline(
+    aes(xintercept = sent_idx),
+    linetype = 2,
+    color = "darkgrey",
+    data = moore_volume_line,
+  ) +
+  geom_text(
+    aes(x = offset, label = label, y = y),
+    data = unnest(moore_volume_line, cols = c(label, offset))
+  ) +
+  geom_segment(
+    aes(x = sent_idx, xend = sent_idx, y = score, yend = offset),
+    data = figure_6_4_annotations,
+    color = "red"
+  ) +
+  geom_text(
+    aes(x = label_x, y = label_offset, label = extract),
+    data = figure_6_4_annotations
+  ) 
+
+ggsave("figures/figure_6_4.png", figure_6_4, width = 11, height = 7)
