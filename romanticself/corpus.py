@@ -30,7 +30,7 @@ class EagerCorpus(ABC):
     def __init__(self, data_dir: str, tokenizer: Callable[..., list[str]] = word_tokenize):
         self.data_dir = data_dir
         self.tokenizer = tokenizer
-        self.data: dict
+        self.data: dict = dict()
 
     def __iter__(self):
         """Yields tokenized texts from the corpus"""

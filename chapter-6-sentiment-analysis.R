@@ -57,7 +57,7 @@ break_every <- function(n) {
   }
 }
 
-figure_6_2 <- corpus %>% 
+figure_6_1 <- corpus %>% 
   bio_author_only() %>% 
   pivot_longer(syuzhet:vader, names_to = "model", values_to = "score") %>% 
   group_by(biography, model) %>%
@@ -72,7 +72,7 @@ figure_6_2 <- corpus %>%
     y = "Sentiment score (rolling mean)"
   )
 
-ggsave("figures/figure_6_2.png", plot = figure_6_2, width = 13, height = 9)
+ggsave("figures/figure_6_1.tiff", plot = figure_6_1, width = 13, height = 9)
 
 # Are the sentiment scores normally distributed?
 corpus %>% 
@@ -82,8 +82,8 @@ corpus %>%
   facet_grid(vars(biography), vars(model)) +
   geom_histogram(bins = 10)
 
-# Figure 6.3: Tabulate some statistics
-figure_6_3 <- corpus %>% 
+# Table 6.2: Tabulate some statistics
+table_6_2 <- corpus %>% 
   bio_author_only() %>% 
   pivot_longer(syuzhet:vader, names_to = "model", values_to = "score") %>% 
   group_by(biography, model) %>% 
@@ -100,13 +100,13 @@ figure_6_3 <- corpus %>%
   )
 
 # Only export the mean, sd and range
-figure_6_3 %>% 
+table_6_2 %>% 
   select(biography:range) %>% 
   mutate(across(where(is.numeric), \(x) round(x, digits = 3))) %>% 
-  write_csv("figures/figure_6_3.csv")
+  write_excel_csv("figures/table_6_2.csv") # Need to convert to xlsx later
 
 # Visualise Moore and Galt with annotations
-figure_6_4_data <- corpus %>% 
+figure_6_2_data <- corpus %>% 
   bio_author_only() %>% 
   filter(biography %in% c("galt.xml", "moore.xml")) %>% 
   group_by(biography) %>% 
@@ -155,7 +155,7 @@ create_label_row <-
 
 # Helper for finding local maxima on the graph
 find_local_optimum <-
-  function(data = figure_6_4_data,
+  function(data = figure_6_2_data,
            .biography = "moore.xml",
            .after = 0,
            .before = Inf,
@@ -167,7 +167,7 @@ find_local_optimum <-
       filter(score == .optimum(score, na.rm = TRUE))
   }
 
-figure_6_4_annotations <- tibble::tibble(
+figure_6_2_annotations <- tibble::tibble(
   biography = as.character(),
   # for facet
   score = as.numeric(),
@@ -184,7 +184,7 @@ figure_6_4_annotations <- tibble::tibble(
   # for 'x' parameter of geom_text
 ) %>%
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "he sailed for Ostend",
     0.115,
@@ -192,14 +192,14 @@ figure_6_4_annotations <- tibble::tibble(
     0.15
   ) %>%
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "he was no more!",
     0.13,
     "'... he was\nno more!'",
     0.16) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "bore him towards his beloved Greece",
     0.08,
@@ -207,7 +207,7 @@ figure_6_4_annotations <- tibble::tibble(
     0.11
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "galt.xml",
     "animal passions mastered",
     0.1,
@@ -215,7 +215,7 @@ figure_6_4_annotations <- tibble::tibble(
     0.13
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "galt.xml",
     "the hollow valley",
     -0.09,
@@ -223,7 +223,7 @@ figure_6_4_annotations <- tibble::tibble(
     -0.125
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "galt.xml",
     "after committing murder",
     0.1,
@@ -231,7 +231,7 @@ figure_6_4_annotations <- tibble::tibble(
     0.13
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "lone and unfriended",
     -0.1,
@@ -239,7 +239,7 @@ figure_6_4_annotations <- tibble::tibble(
     -0.13
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "galt.xml",
     "chiefs of the factions",
     0.09,
@@ -247,7 +247,7 @@ figure_6_4_annotations <- tibble::tibble(
     0.13
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "galt.xml",
     "never awoke again",
     0.1,
@@ -255,7 +255,7 @@ figure_6_4_annotations <- tibble::tibble(
     0.11
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "first had the happiness",
     0.1,
@@ -272,7 +272,7 @@ figure_6_4_annotations <- tibble::tibble(
   #   0.13
   # ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "county of Durham",
     -0.12,
@@ -280,7 +280,7 @@ figure_6_4_annotations <- tibble::tibble(
     -0.145
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "she had breathed her last",
     -0.15,
@@ -288,7 +288,7 @@ figure_6_4_annotations <- tibble::tibble(
     -0.16
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "eleven years from this period",
     0.16,
@@ -296,7 +296,7 @@ figure_6_4_annotations <- tibble::tibble(
     0.185
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "dictated by justice or by vanity",
     0.1,
@@ -304,7 +304,7 @@ figure_6_4_annotations <- tibble::tibble(
     0.125
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "fair object of this last",
     -0.11,
@@ -328,7 +328,7 @@ figure_6_4_annotations <- tibble::tibble(
   #   0.105
   # ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "death of his daughter",
     -0.1,
@@ -336,7 +336,7 @@ figure_6_4_annotations <- tibble::tibble(
     -0.125
   ) %>% 
   create_label_row(
-    figure_6_4_data,
+    figure_6_2_data,
     "moore.xml",
     "love of solitary rambles",
     0.1,
@@ -345,7 +345,7 @@ figure_6_4_annotations <- tibble::tibble(
     15
   )
 
-figure_6_4 <- figure_6_4_data %>% 
+figure_6_2 <- figure_6_2_data %>% 
   ggplot(aes(sent_idx, score)) +
   geom_line() +
   geom_smooth(aes(sent_idx, syuzhet), method = "loess", alpha = 0.2) +
@@ -374,7 +374,7 @@ figure_6_4 <- figure_6_4_data %>%
     data = figure_6_4_annotations
   ) 
 
-ggsave("figures/figure_6_4.png", figure_6_4, width = 11, height = 7)
+ggsave("figures/figure_6_2.tiff", figure_6_2, width = 11, height = 7)
 
 # Volume 1 vs Volume 2
 corpus %>% 
@@ -391,7 +391,7 @@ corpus %>%
     across(syuzhet:vader, \(x) diff(x)/sum(x))
   )
 
-# The peak of Figure 6.4
+# The peak of Figure 6.2
 find_local_optimum() # moore
 find_local_optimum(.biography = "galt.xml")  
 
@@ -427,4 +427,4 @@ appendix_8_3 <- corpus %>%
   annotate("text", x = moore_volume_line_2 - 1000, y = 0, label = "Volume 1") +
   annotate("text", x = moore_volume_line_2 + 1000, y = 0, label = "Volume 2")
 
-ggsave("figures/appendix_8_3.png", plot = appendix_8_3, width = 11, height = 5)
+ggsave("figures/appendix_8_3.tiff", plot = appendix_8_3, width = 11, height = 5)
