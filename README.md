@@ -27,7 +27,7 @@ In the main directory, you will find one Jupyter Notebook for each chapter of th
 * [Chapter 3](Chapter%203%20-%20Fiction.ipynb): Analysis of the novel corpus to explore the portrayal of self in the *Bildungsroman* and the 'network novel'
 * [Chapter 4](Chapter%204%20-%20Lyric.ipynb): Analysis of the sonnet corpus to explore how genre, narrative and deixis contribute to the portrayal of self in Romantic lyric poetry
 * [Chapter 5](Chapter%205%20-%20Drama.ipynb): Network analysis of two drama corpora to establish how characterisation and setting work together to undo the self in Romantic tragedy
-* [Chapter 6](Chapter%206%20-%20Life.ipynb): Sentiment analysis of the biography corpus to explore how Thomas Moore and other Romantic biographers construct the selfhood of their subject
+* [Chapter 6](Chapter%206%20-%20Prose.ipynb): Sentiment analysis of the biography corpus to explore how Thomas Moore and other Romantic biographers construct the selfhood of their subject
 
 ## Licences
 
