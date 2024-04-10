@@ -6,6 +6,8 @@ Code supporting the analysis in *Romanticism and the Contingent Self*. The main 
 
 This book offers a new critique of selfhood in Romantic literature. In the past, Romanticism has been seen as an individualistic movement, with writers believing in the ‘centrality’ of the self. Challenging this prevailing view of Romanticism and the modern self, this study unveils an alternative tradition of Romantic writing in which the self is fragile, degenerate, non-existent – or in a word, contingent. It combines philosophy, intellectual history, literary studies and digital humanities and takes a transnational approach both in its coverage of philosophical thought and literature, including case studies from England, Ireland, Scotland and colonial Australia, with examples from American and European works as well. The book also uses innovative digital techniques such as text analysis, sentiment mining and network analysis to enrich the exploration of text and context. It covers all major genres of Romantic writing: fiction (realist novels), poetry (the sonnet), non-fiction prose (biography) and drama (gothic tragedy). Providing a new framework for understanding the contingent self, this book is of interest to scholars and students of Romantic literature, philosophy of the self and digital humanities.
 
+[Buy the book](https://link.springer.com/book/9783031499586)
+
 ## Getting Started
 
 The code in this repository is not entirely reproducible, because some of the data is copyright protected an cannot be published here. However, the actual scripts should run on any machine with Python 3 installed, so long as you install the dependencies:
