@@ -1,8 +1,8 @@
 # Romanticism and the Contingent Self
 
-Code supporting the analysis in my in-preparation monograph *Romanticism and the Contingent Self*. The main functionality is packaged up in the `romanticself` Python package. Jupyter Notebooks in the home directory show how I generated the tables and figures for each chapter.
-
 <img src="romanticism-and-the-contingent-self-cover.jpg" align="right" width="30%"/>
+
+Code supporting the analysis in my in-preparation monograph *Romanticism and the Contingent Self*. The main functionality is packaged up in the `romanticself` Python package. Jupyter Notebooks in the home directory show how I generated the tables and figures for each chapter.
 
 ## Getting Started
 
