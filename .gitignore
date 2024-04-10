@@ -1,6 +1,9 @@
 # Hidden directories
 scratchpads/
 
+# OSX nonsense
+.DS_Store
+
 # Conceal script files (private user data)
 *.sh
 
